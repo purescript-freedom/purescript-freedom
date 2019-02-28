@@ -1,0 +1,39 @@
+{
+  "name": "purescript-freedom",
+  "license": "MIT",
+  "homepage": "https://github.com/purescript-freedom/purescript-freedom",
+  "authors": [
+    "Shinya Takahashi <s.takahashi313@gmail.com>"
+  ],
+  "description": "Virtual DOM for PureScript",
+  "keywords": [
+    "purescript",
+    "virtual-dom",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/purescript-freedom/purescript-freedom.git"
+  },
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-web-html": "^1.2.0",
+    "purescript-simple-emitter": "^1.0.0",
+    "purescript-console": "^4.2.0",
+    "purescript-safely": "^4.0.0",
+    "purescript-foreign-object": "^1.1.0",
+    "purescript-aff": "^5.1.0",
+    "purescript-freet": "^4.0.0"
+  },
+  "devDependencies": {
+    "purescript-test-unit": "^14.0.0"
+  }
+}
