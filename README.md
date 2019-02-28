@@ -4,9 +4,8 @@
 
 Virtual DOM for PureScript.
 
-## Status
-This is alpha version.
 There is not document, and examples.
+If more star, I prioritize adding them.
 
 ## Concepts
 - Less boilerplate
