@@ -12,6 +12,7 @@ There is not document, and examples.
 - Less boilerplate
 - Testable and customizable effect
 - Customizable rendering (e.g. portal, css transition, virtual list, and so on) without global and local state
+- CSS with auto-generated class
 
 ## Installation
 
