@@ -20,7 +20,7 @@ import Freedom.Renderer.Util (class IsRenderEnv, class Affable)
 import Freedom.Renderer.Util as Util
 import Freedom.Styler (Styler)
 import Freedom.TransformF.Type (TransformF)
-import Freedom.VNode (VNode(..), VElement(..), VRender, VRenderEnv(..), runVRender)
+import Freedom.VNode (VNode(..), VElement(..), BridgeFoot, VRender, VRenderEnv(..), runVRender, bridge, fromBridgeFoot)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.DOM.Element as E
 import Web.DOM.Node (Node, appendChild, insertBefore, removeChild)
@@ -147,7 +147,7 @@ switchContextIfSVG
 switchContextIfSVG (Text _) m = m
 switchContextIfSVG (Element element) m =
   local (changeSVGContext $ element.tag == "svg") m
-switchContextIfSVG (OperativeElement element) m =
+switchContextIfSVG (OperativeElement _ element) m =
   local (changeSVGContext $ element.tag == "svg") m
 
 changeSVGContext :: forall f state. Boolean -> RenderEnv f state -> RenderEnv f state
@@ -163,8 +163,8 @@ operateCreating
   -> Render f state Node
 operateCreating (Text text) =
   liftEffect $ Util.createText_ text >>= T.toNode >>> pure
-operateCreating (OperativeElement element) = do
-  operator <- genOperator [] element.children
+operateCreating (OperativeElement bf element) = do
+  operator <- genOperator bf [] element.children
   withReaderT (const operator) do
     el <- Util.createElement_ element
     Util.runLifecycle $ element.didCreate el
@@ -183,8 +183,8 @@ operateDeleting
   -> VElement f state
   -> Render f state Unit
 operateDeleting _ (Text _) = pure unit
-operateDeleting _ (OperativeElement { children, didDelete }) = do
-  operator <- genOperator children []
+operateDeleting _ (OperativeElement bf { children, didDelete }) = do
+  operator <- genOperator bf children []
   withReaderT (const operator) $ Util.runLifecycle didDelete
 operateDeleting node (Element { children, didDelete }) = do
   diff patch node children []
@@ -199,8 +199,9 @@ operateUpdating
   -> Render f state Unit
 operateUpdating node (Text c) (Text n) =
   liftEffect $ Util.updateText_ c n node
-operateUpdating node (OperativeElement c) (OperativeElement n) = do
-  operator <- genOperator c.children n.children
+operateUpdating node (OperativeElement cbf c) (OperativeElement nbf n) = do
+  liftEffect $ bridge cbf nbf
+  operator <- genOperator nbf c.children n.children
   withReaderT (const operator) do
     let el = unsafeCoerce node
     Util.updateElement_ c n el
@@ -214,11 +215,12 @@ operateUpdating _ _ _ = pure unit
 
 genOperator
   :: forall f state
-   . Array (VNode f state)
+   . BridgeFoot f state
+  -> Array (VNode f state)
   -> Array (VNode f state)
   -> Render f state (Operator f state)
-genOperator prevOriginChildren currentOriginChildren = do
-  operationRef <- liftEffect $ new []
+genOperator bf prevOriginChildren currentOriginChildren = do
+  operationRef <- liftEffect $ fromBridgeFoot bf
   RenderEnv { transformF, styler, isSVG } <- ask
   pure $ Operator
     { transformF

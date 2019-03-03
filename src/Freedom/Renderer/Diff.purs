@@ -28,7 +28,7 @@ instance hasKeyVNode :: HasKey (VNode f state) where
   key (VNode k _) = k
   fallbackPrefix (VNode _ (Text _)) = "text_"
   fallbackPrefix (VNode _ (Element { tag })) = "element_" <> tag <> "_"
-  fallbackPrefix (VNode _ (OperativeElement { tag })) = "oelement_" <> tag <> "_"
+  fallbackPrefix (VNode _ (OperativeElement _ { tag })) = "oelement_" <> tag <> "_"
 
 type PatchArgs parent child =
   { current :: Maybe child

@@ -17,7 +17,7 @@ import Prelude
 import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Rec.Class (class MonadRec)
 import Effect.Aff (Aff)
-import Freedom.VNode (VObject, VRender, VElement(..), VNode(..))
+import Freedom.VNode (VObject, VRender, VElement(..), VNode(..), createBridgeFoot)
 import Foreign.Object (empty, insert)
 import Web.DOM.Element (Element)
 import Web.Event.Event (Event)
@@ -37,7 +37,7 @@ op
    . Functor (f state)
   => VObject f state (VRender f state)
   -> VNode f state
-op = VNode "" <<< OperativeElement
+op = VNode "" <<< OperativeElement (createBridgeFoot unit)
 
 keyed :: forall f state. String -> VNode f state -> VNode f state
 keyed key (VNode _ x) = VNode key x

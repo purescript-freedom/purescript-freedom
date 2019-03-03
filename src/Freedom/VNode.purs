@@ -2,6 +2,10 @@ module Freedom.VNode
   ( VObject
   , VElement(..)
   , VNode(..)
+  , BridgeFoot
+  , createBridgeFoot
+  , bridge
+  , fromBridgeFoot
   , VRenderEnv(..)
   , VRender
   , getPrevChildren
@@ -25,6 +29,8 @@ import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Exception (Error)
+import Effect.Ref (Ref, new, read, write)
+import Effect.Unsafe (unsafePerformEffect)
 import Foreign.Object (Object)
 import Web.DOM.Element (Element)
 import Web.DOM.Node (Node)
@@ -43,9 +49,23 @@ type VObject f state m =
 data VElement f state
   = Text String
   | Element (VObject f state Aff)
-  | OperativeElement (VObject f state (VRender f state))
+  | OperativeElement (BridgeFoot f state) (VObject f state (VRender f state))
 
 data VNode f state = VNode String (VElement f state)
+
+newtype BridgeFoot f state = BridgeFoot (Ref (Array (Array (VNode f state))))
+
+createBridgeFoot :: forall f state. Unit -> BridgeFoot f state
+createBridgeFoot _ = BridgeFoot $ unsafePerformEffect $ new []
+
+bridge :: forall f state. BridgeFoot f state -> BridgeFoot f state -> Effect Unit
+bridge (BridgeFoot from) (BridgeFoot to) = read from >>= flip write to
+
+fromBridgeFoot
+  :: forall f state
+   . BridgeFoot f state
+  -> Effect (Ref (Array (Array (VNode f state))))
+fromBridgeFoot (BridgeFoot ref) = pure ref
 
 newtype VRenderEnv f state = VRenderEnv
   { getPrevChildren :: Effect (Maybe (Array (VNode f state)))
