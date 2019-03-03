@@ -9,6 +9,7 @@ module Freedom.VNode
   , VRenderEnv(..)
   , VRender
   , getOriginChildren
+  , getLatestRenderedChildren
   , renderChildren
   , runVRender
   ) where
@@ -66,6 +67,7 @@ fromBridgeFoot (BridgeFoot ref) = pure ref
 
 newtype VRenderEnv f state = VRenderEnv
   { getOriginChildren :: Effect (Array (VNode f state))
+  , getLatestRenderedChildren :: Effect (Array (VNode f state))
   , renderChildren :: Node -> Array (VNode f state) -> Effect Unit
   }
 
@@ -92,6 +94,11 @@ getOriginChildren :: forall f state. VRender f state (Array (VNode f state))
 getOriginChildren = do
   VRenderEnv os <- ask
   liftEffect $ os.getOriginChildren
+
+getLatestRenderedChildren :: forall f state. VRender f state (Array (VNode f state))
+getLatestRenderedChildren = do
+  VRenderEnv os <- ask
+  liftEffect $ os.getLatestRenderedChildren
 
 renderChildren
   :: forall f state

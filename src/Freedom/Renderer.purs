@@ -14,7 +14,7 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console (error)
-import Effect.Ref (Ref, modify, new)
+import Effect.Ref (Ref, modify, new, read)
 import Freedom.Renderer.Diff (diff)
 import Freedom.Renderer.Util (class IsRenderEnv, class Affable)
 import Freedom.Renderer.Util as Util
@@ -235,6 +235,8 @@ instance affableVRender :: Functor (f state) => Affable (Operator f state) f sta
   toAff (Operator r) = runFreeT r.transformF <<< hoistFreeT nt
     where
       getOriginChildren = pure r.originChildren
+      getLatestRenderedChildren =
+        fromMaybe [] <$> (_ !! 0) <$> read r.operationRef
       renderChildren node children = do
         history <- flip modify r.operationRef \h -> take 2 $ children : h
         flip runReaderT renderEnv do
@@ -251,6 +253,7 @@ instance affableVRender :: Functor (f state) => Affable (Operator f state) f sta
       nt :: VRender f state ~> Aff
       nt = flip runVRender $ VRenderEnv
         { getOriginChildren
+        , getLatestRenderedChildren
         , renderChildren
         }
 
