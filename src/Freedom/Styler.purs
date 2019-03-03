@@ -18,7 +18,7 @@ import Data.String.Regex.Flags (global)
 import Data.String.Regex.Unsafe (unsafeRegex)
 import Effect (Effect)
 import Effect.Ref (Ref, modify_, new, read)
-import Foreign.Object (Object, empty, values, insert)
+import Foreign.Object (Object, empty, values, insert, member)
 import Partial.Unsafe (unsafePartial)
 import SimpleEmitter (Emitter, createEmitter, subscribe, emit)
 import Web.DOM.Document (createElement)
@@ -52,12 +52,13 @@ createStyler = do
 
 registerStyle :: String -> Styler -> Effect String
 registerStyle style (Styler s) = do
-  modify_ (insert name output) s.stylesRef
-  emit Register s.emitter
+  let name = "d" <> generateHash style
+  styles <- read s.stylesRef
+  unless (member name styles) do
+    let output = minify $ replaceToken name style
+    modify_ (insert name output) s.stylesRef
+    emit Register s.emitter
   pure name
-  where
-    name = "d" <> generateHash style
-    output = minify $ replaceToken name style
 
 replaceToken :: String -> String -> String
 replaceToken instead target =
