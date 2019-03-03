@@ -2,7 +2,7 @@
 
 [![Latest release](http://img.shields.io/github/release/purescript-freedom/purescript-freedom.svg)](https://github.com/purescript-freedom/purescript-freedom/releases)
 
-Virtual DOM for PureScript.
+The new generation Virtual DOM for PureScript.
 
 There is not document, and examples.
 If more star, I prioritize adding them.
