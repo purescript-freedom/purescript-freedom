@@ -152,7 +152,7 @@ diff patch parent currentChildren nextChildren = do
             { current: cursorCurrentStart s
             , next: cursorNextStart s
             , realParentNode: parent
-            , realNodeIndex: realSourceIdx s.currentStart s
+            , realNodeIndex: s.currentStart
             , moveIndex: Nothing
             }
           pure $ Loop $ forwardCurrentCursor >>> forwardNextCursor $ s
@@ -161,7 +161,7 @@ diff patch parent currentChildren nextChildren = do
             { current: cursorCurrentEnd s
             , next: cursorNextEnd s
             , realParentNode: parent
-            , realNodeIndex: realSourceIdx s.currentEnd s
+            , realNodeIndex: s.currentEnd
             , moveIndex: Nothing
             }
           pure $ Loop $ backwardCurrentCursor >>> backwardNextCursor $ s
