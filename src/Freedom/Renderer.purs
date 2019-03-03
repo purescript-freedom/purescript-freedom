@@ -9,12 +9,12 @@ import Prelude
 import Control.Monad.Free.Trans (runFreeT, hoistFreeT)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT, withReaderT)
 import Data.Array (take, (!!), (:))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console (error)
-import Effect.Ref (Ref, modify, new, read, write)
+import Effect.Ref (Ref, modify, new)
 import Freedom.Renderer.Diff (diff)
 import Freedom.Renderer.Util (class IsRenderEnv, class Affable)
 import Freedom.Renderer.Util as Util
@@ -83,8 +83,7 @@ newtype Operator f state = Operator
   , transformF :: TransformF f state
   , isSVG :: Boolean
   , operationRef :: Ref (Array (Array (VNode f state)))
-  , prevOriginChildren :: Array (VNode f state)
-  , currentOriginChildren :: Array (VNode f state)
+  , originChildren :: Array (VNode f state)
   }
 
 type Render f state a = ReaderT (RenderEnv f state) Effect a
@@ -164,7 +163,7 @@ operateCreating
 operateCreating (Text text) =
   liftEffect $ Util.createText_ text >>= T.toNode >>> pure
 operateCreating (OperativeElement bf element) = do
-  operator <- genOperator bf [] element.children
+  operator <- genOperator bf element.children
   withReaderT (const operator) do
     el <- Util.createElement_ element
     Util.runLifecycle $ element.didCreate el
@@ -183,8 +182,8 @@ operateDeleting
   -> VElement f state
   -> Render f state Unit
 operateDeleting _ (Text _) = pure unit
-operateDeleting _ (OperativeElement bf { children, didDelete }) = do
-  operator <- genOperator bf children []
+operateDeleting _ (OperativeElement bf { didDelete }) = do
+  operator <- genOperator bf []
   withReaderT (const operator) $ Util.runLifecycle didDelete
 operateDeleting node (Element { children, didDelete }) = do
   diff patch node children []
@@ -201,7 +200,7 @@ operateUpdating node (Text c) (Text n) =
   liftEffect $ Util.updateText_ c n node
 operateUpdating node (OperativeElement cbf c) (OperativeElement nbf n) = do
   liftEffect $ bridge cbf nbf
-  operator <- genOperator nbf c.children n.children
+  operator <- genOperator nbf n.children
   withReaderT (const operator) do
     let el = unsafeCoerce node
     Util.updateElement_ c n el
@@ -217,9 +216,8 @@ genOperator
   :: forall f state
    . BridgeFoot f state
   -> Array (VNode f state)
-  -> Array (VNode f state)
   -> Render f state (Operator f state)
-genOperator bf prevOriginChildren currentOriginChildren = do
+genOperator bf originChildren = do
   operationRef <- liftEffect $ fromBridgeFoot bf
   RenderEnv { transformF, styler, isSVG } <- ask
   pure $ Operator
@@ -227,8 +225,7 @@ genOperator bf prevOriginChildren currentOriginChildren = do
     , styler
     , isSVG
     , operationRef
-    , prevOriginChildren
-    , currentOriginChildren
+    , originChildren
     }
 
 instance affableAff :: Functor (f state) => Affable (RenderEnv f state) f state Aff where
@@ -237,12 +234,13 @@ instance affableAff :: Functor (f state) => Affable (RenderEnv f state) f state 
 instance affableVRender :: Functor (f state) => Affable (Operator f state) f state (VRender f state) where
   toAff (Operator r) = runFreeT r.transformF <<< hoistFreeT nt
     where
-      getPrevChildren = (_ !! 0) <$> read r.operationRef
-      getPrevOriginChildren = pure r.prevOriginChildren
-      getCurrentOriginChildren = pure r.currentOriginChildren
-      renderChildren node prev current = do
-        write [ current, prev ] r.operationRef
-        flip runReaderT renderEnv $ diff patch node prev current
+      getOriginChildren = pure r.originChildren
+      renderChildren node children = do
+        history <- flip modify r.operationRef \h -> take 2 $ children : h
+        flip runReaderT renderEnv do
+          diff patch node
+            (fromMaybe [] $ history !! 1)
+            (fromMaybe [] $ history !! 0)
 
       renderEnv = RenderEnv
         { transformF: r.transformF
@@ -252,9 +250,7 @@ instance affableVRender :: Functor (f state) => Affable (Operator f state) f sta
 
       nt :: VRender f state ~> Aff
       nt = flip runVRender $ VRenderEnv
-        { getPrevChildren
-        , getPrevOriginChildren
-        , getCurrentOriginChildren
+        { getOriginChildren
         , renderChildren
         }
 

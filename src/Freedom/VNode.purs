@@ -8,9 +8,7 @@ module Freedom.VNode
   , fromBridgeFoot
   , VRenderEnv(..)
   , VRender
-  , getPrevChildren
-  , getPrevOriginChildren
-  , getCurrentOriginChildren
+  , getOriginChildren
   , renderChildren
   , runVRender
   ) where
@@ -23,7 +21,6 @@ import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Reader (class MonadAsk, ReaderT, ask, runReaderT)
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Plus (class Plus)
-import Data.Maybe (Maybe)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
@@ -68,10 +65,8 @@ fromBridgeFoot
 fromBridgeFoot (BridgeFoot ref) = pure ref
 
 newtype VRenderEnv f state = VRenderEnv
-  { getPrevChildren :: Effect (Maybe (Array (VNode f state)))
-  , getPrevOriginChildren :: Effect (Array (VNode f state))
-  , getCurrentOriginChildren :: Effect (Array (VNode f state))
-  , renderChildren :: Node -> Array (VNode f state) -> Array (VNode f state) -> Effect Unit
+  { getOriginChildren :: Effect (Array (VNode f state))
+  , renderChildren :: Node -> Array (VNode f state) -> Effect Unit
   }
 
 newtype VRender f state a =
@@ -93,30 +88,19 @@ derive newtype instance monadErrorVRender :: MonadError Error (VRender f state)
 derive newtype instance monadAskVRender :: MonadAsk (VRenderEnv f state) (VRender f state)
 derive newtype instance monadRecVRender :: MonadRec (VRender f state)
 
-getPrevChildren :: forall f state. VRender f state (Maybe (Array (VNode f state)))
-getPrevChildren = do
+getOriginChildren :: forall f state. VRender f state (Array (VNode f state))
+getOriginChildren = do
   VRenderEnv os <- ask
-  liftEffect $ os.getPrevChildren
-
-getPrevOriginChildren :: forall f state. VRender f state (Array (VNode f state))
-getPrevOriginChildren = do
-  VRenderEnv os <- ask
-  liftEffect $ os.getPrevOriginChildren
-
-getCurrentOriginChildren :: forall f state. VRender f state (Array (VNode f state))
-getCurrentOriginChildren = do
-  VRenderEnv os <- ask
-  liftEffect $ os.getCurrentOriginChildren
+  liftEffect $ os.getOriginChildren
 
 renderChildren
   :: forall f state
    . Node
   -> Array (VNode f state)
-  -> Array (VNode f state)
   -> VRender f state Unit
-renderChildren parent prevs currents = do
+renderChildren parent children = do
   VRenderEnv os <- ask
-  liftEffect $ os.renderChildren parent prevs currents
+  liftEffect $ os.renderChildren parent children
 
 runVRender
   :: forall f state a
