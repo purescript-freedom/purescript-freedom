@@ -55,7 +55,7 @@ tag tag' =
   , children: []
   , didCreate: const $ pure unit
   , didUpdate: const $ pure unit
-  , didDelete: pure unit
+  , didDelete: const $ pure unit
   }
 
 kids
@@ -111,7 +111,7 @@ didDelete
   :: forall f state m
    . Functor (f state)
   => MonadRec m
-  => FreeT (f state) m Unit
+  => (Element -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
 didDelete h = _ { didDelete = h }

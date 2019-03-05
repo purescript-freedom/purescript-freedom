@@ -182,12 +182,12 @@ operateDeleting
   -> VElement f state
   -> Render f state Unit
 operateDeleting _ (Text _) = pure unit
-operateDeleting _ (OperativeElement bf { didDelete }) = do
+operateDeleting node (OperativeElement bf { didDelete }) = do
   operator <- genOperator bf []
-  withReaderT (const operator) $ Util.runLifecycle didDelete
+  withReaderT (const operator) $ Util.runLifecycle $ didDelete $ unsafeCoerce node
 operateDeleting node (Element { children, didDelete }) = do
   diff patch node children []
-  Util.runLifecycle didDelete
+  Util.runLifecycle $ didDelete $ unsafeCoerce node
 
 operateUpdating
   :: forall f state

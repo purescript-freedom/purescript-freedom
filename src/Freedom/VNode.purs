@@ -41,7 +41,7 @@ type VObject f state m =
   , children :: Array (VNode f state)
   , didCreate :: Element -> FreeT (f state) m Unit
   , didUpdate :: Element -> FreeT (f state) m Unit
-  , didDelete :: FreeT (f state) m Unit
+  , didDelete :: Element -> FreeT (f state) m Unit
   }
 
 data VElement f state
