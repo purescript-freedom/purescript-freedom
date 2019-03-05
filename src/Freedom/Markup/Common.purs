@@ -1,11 +1,11 @@
 module Freedom.Markup.Common
-  ( keyed
-  , text
-  , element
-  , operative
+  ( t
+  , el
+  , op
+  , keyed
+  , tag
   , kids
   , prop
-  , class IsHandler
   , on
   , didCreate
   , didUpdate
@@ -22,30 +22,30 @@ import Foreign.Object (empty, insert)
 import Web.DOM.Element (Element)
 import Web.Event.Event (Event)
 
+t :: forall f state. String -> VNode f state
+t = VNode "" <<< Text
+
+el
+  :: forall f state
+   . Functor (f state)
+  => VObject f state Aff
+  -> VNode f state
+el = VNode "" <<< Element
+
+op
+  :: forall f state
+   . Functor (f state)
+  => VObject f state (VRender f state)
+  -> VNode f state
+op = VNode "" <<< OperativeElement (createBridgeFoot unit)
+
 keyed :: forall f state. String -> VNode f state -> VNode f state
-keyed key (VNode _ velement) = VNode key velement
-
-text :: forall f state. String -> VNode f state
-text = VNode "" <<< Text
-
-element
-  :: forall f state
-   . Functor (f state)
-  => String
-  -> VNode f state
-element = VNode "" <<< Element <<< tag
-
-operative
-  :: forall f state
-   . Functor (f state)
-  => String
-  -> VNode f state
-operative = VNode "" <<< OperativeElement (createBridgeFoot unit) <<< tag
+keyed key (VNode _ x) = VNode key x
 
 tag
   :: forall f state m
    . Functor (f state)
-  => Monad m
+  => MonadRec m
   => String
   -> VObject f state m
 tag tag' =
@@ -59,58 +59,59 @@ tag tag' =
   }
 
 kids
-  :: forall f state
+  :: forall f state m
    . Functor (f state)
+  => MonadRec m
   => Array (VNode f state)
-  -> VNode f state
-  -> VNode f state
-kids children (VNode key (Element r)) =
-  VNode key $ Element r { children = children }
-kids children (VNode key (OperativeElement bf r)) =
-  VNode key $ OperativeElement bf r { children = children }
-kids _ vnode = vnode
+  -> VObject f state m
+  -> VObject f state m
+kids children = _ { children = children }
 
 prop
-  :: forall f state
+  :: forall f state m
    . Functor (f state)
+  => MonadRec m
   => String
   -> String
-  -> VNode f state
-  -> VNode f state
-prop name val (VNode key (Element r)) =
-  VNode key $ Element r { props = insert name val r.props }
-prop name val (VNode key (OperativeElement bf r)) =
-  VNode key $ OperativeElement bf r { props = insert name val r.props }
-prop _ _ vnode = vnode
+  -> VObject f state m
+  -> VObject f state m
+prop name val obj =
+  obj { props = insert name val obj.props }
 
-class (Functor (f state), MonadRec m) <= IsHandler f state m where
-  didCreate :: (Element -> FreeT (f state) m Unit) -> VNode f state -> VNode f state
-  didUpdate :: (Element -> FreeT (f state) m Unit) -> VNode f state -> VNode f state
-  didDelete :: FreeT (f state) m Unit -> VNode f state -> VNode f state
-  on :: String -> (Event -> FreeT (f state) m Unit) -> VNode f state -> VNode f state
+on
+  :: forall f state m
+   . Functor (f state)
+  => MonadRec m
+  => String
+  -> (Event -> FreeT (f state) m Unit)
+  -> VObject f state m
+  -> VObject f state m
+on name h obj =
+  obj { handlers = insert name h obj.handlers }
 
-instance isHandlerAff :: Functor (f state) => IsHandler f state Aff where
-  didCreate h (VNode key (Element r)) = VNode key $ Element r { didCreate = h }
-  didCreate _ vnode = vnode
+didCreate
+  :: forall f state m
+   . Functor (f state)
+  => MonadRec m
+  => (Element -> FreeT (f state) m Unit)
+  -> VObject f state m
+  -> VObject f state m
+didCreate h = _ { didCreate = h }
 
-  didUpdate h (VNode key (Element r)) = VNode key $ Element r { didUpdate = h }
-  didUpdate _ vnode = vnode
+didUpdate
+  :: forall f state m
+   . Functor (f state)
+  => MonadRec m
+  => (Element -> FreeT (f state) m Unit)
+  -> VObject f state m
+  -> VObject f state m
+didUpdate h = _ { didUpdate = h }
 
-  didDelete h (VNode key (Element r)) = VNode key $ Element r { didDelete = h }
-  didDelete _ vnode = vnode
-
-  on name h (VNode key (Element r)) = VNode key $ Element r { handlers = insert name h r.handlers }
-  on _ _ vnode = vnode
-
-instance isHandlerVRender :: Functor (f state) => IsHandler f state (VRender f state) where
-  didCreate h (VNode key (OperativeElement bf r)) = VNode key $ OperativeElement bf r { didCreate = h }
-  didCreate _ vnode = vnode
-
-  didUpdate h (VNode key (OperativeElement bf r)) = VNode key $ OperativeElement bf r { didUpdate = h }
-  didUpdate _ vnode = vnode
-
-  didDelete h (VNode key (OperativeElement bf r)) = VNode key $ OperativeElement bf r { didDelete = h }
-  didDelete _ vnode = vnode
-
-  on name h (VNode key (OperativeElement bf r)) = VNode key $ OperativeElement bf r { handlers = insert name h r.handlers }
-  on _ _ vnode = vnode
+didDelete
+  :: forall f state m
+   . Functor (f state)
+  => MonadRec m
+  => FreeT (f state) m Unit
+  -> VObject f state m
+  -> VObject f state m
+didDelete h = _ { didDelete = h }
