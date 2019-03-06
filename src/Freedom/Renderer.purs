@@ -123,6 +123,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
         Just node -> do
           operateDeleting node current'
           liftEffect $ void $ removeChild node realParentNode
+          runDidDelete node current'
 
     Just (VNode _ current'), Just (VNode _ next') -> switchContextIfSVG next' do
       maybeNode <- liftEffect $ Util.childNode realNodeIndex realParentNode
@@ -191,13 +192,22 @@ operateDeleting
   => Node
   -> VElement f state
   -> Render f state Unit
-operateDeleting _ (Text _) = pure unit
-operateDeleting node (OperativeElement bf element) = do
+operateDeleting node (Element element) =
+  diff patch node element.children []
+operateDeleting _ _ = pure unit
+
+runDidDelete
+  :: forall f state
+   . Functor (f state)
+  => Node
+  -> VElement f state
+  -> Render f state Unit
+runDidDelete node (OperativeElement bf element) = do
   operator <- genOperator bf []
   withReaderT (const operator) $ Util.runLifecycle $ element.didDelete $ unsafeCoerce node
-operateDeleting node (Element element) = do
-  diff patch node element.children []
+runDidDelete node (Element element) =
   Util.runLifecycle $ element.didDelete $ unsafeCoerce node
+runDidDelete _ _ = pure unit
 
 operateUpdating
   :: forall f state
