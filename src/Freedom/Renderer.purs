@@ -114,6 +114,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
         void case maybeNode of
           Nothing -> appendChild newNode realParentNode
           Just node -> insertBefore newNode node realParentNode
+      runDidCreate newNode next'
 
     Just (VNode _ current'), Nothing -> switchContextIfSVG current' do
       maybeNode <- liftEffect $ Util.childNode realNodeIndex realParentNode
@@ -164,16 +165,25 @@ operateCreating (Text text) =
   liftEffect $ Util.createText_ text >>= T.toNode >>> pure
 operateCreating (OperativeElement bf element) = do
   operator <- genOperator bf element.children
-  withReaderT (const operator) do
-    el <- Util.createElement_ element
-    Util.runLifecycle $ element.didCreate el
-    pure $ E.toNode el
+  withReaderT (const operator) $ E.toNode <$> Util.createElement_ element
 operateCreating (Element element) = do
   el <- Util.createElement_ element
   let node = E.toNode el
   diff patch node [] element.children
-  Util.runLifecycle $ element.didCreate el
   pure node
+
+runDidCreate
+  :: forall f state
+   . Functor (f state)
+  => Node
+  -> VElement f state
+  -> Render f state Unit
+runDidCreate node (OperativeElement bf element) = do
+  operator <- genOperator bf element.children
+  withReaderT (const operator) $ Util.runLifecycle $ element.didCreate $ unsafeCoerce node
+runDidCreate node (Element element) =
+  Util.runLifecycle $ element.didCreate $ unsafeCoerce node
+runDidCreate _ _ = pure unit
 
 operateDeleting
   :: forall f state
