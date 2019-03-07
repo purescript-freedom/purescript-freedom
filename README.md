@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png?raw=true" alt="freedom" width="150" />
+</p>
+
 # purescript-freedom
 
 [![Latest release](http://img.shields.io/github/release/purescript-freedom/purescript-freedom.svg)](https://github.com/purescript-freedom/purescript-freedom/releases)
