@@ -50,10 +50,10 @@ data VElement f state
 
 data VNode f state = VNode String (VElement f state)
 
-newtype BridgeFoot f state = BridgeFoot (Ref (Array (Array (VNode f state))))
+newtype BridgeFoot f state = BridgeFoot (Ref (Ref (Array (Array (VNode f state)))))
 
 createBridgeFoot :: forall f state. Unit -> BridgeFoot f state
-createBridgeFoot _ = BridgeFoot $ unsafePerformEffect $ new []
+createBridgeFoot _ = BridgeFoot $ unsafePerformEffect $ new [] >>= new
 
 bridge :: forall f state. BridgeFoot f state -> BridgeFoot f state -> Effect Unit
 bridge (BridgeFoot from) (BridgeFoot to) = read from >>= flip write to
@@ -62,7 +62,7 @@ fromBridgeFoot
   :: forall f state
    . BridgeFoot f state
   -> Effect (Ref (Array (Array (VNode f state))))
-fromBridgeFoot (BridgeFoot ref) = pure ref
+fromBridgeFoot (BridgeFoot ref) = read ref
 
 type Operations f state =
   { getOriginChildren :: Effect (Array (VNode f state))
