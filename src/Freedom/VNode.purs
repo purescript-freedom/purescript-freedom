@@ -6,11 +6,10 @@ module Freedom.VNode
   , createBridgeFoot
   , bridge
   , fromBridgeFoot
+  , Operations
   , VRenderEnv(..)
   , VRender
-  , getOriginChildren
-  , getLatestRenderedChildren
-  , renderChildren
+  , operations
   , runVRender
   ) where
 
@@ -25,7 +24,7 @@ import Control.Plus (class Plus)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
-import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Class (class MonadEffect)
 import Effect.Exception (Error)
 import Effect.Ref (Ref, new, read, write)
 import Effect.Unsafe (unsafePerformEffect)
@@ -65,11 +64,13 @@ fromBridgeFoot
   -> Effect (Ref (Array (Array (VNode f state))))
 fromBridgeFoot (BridgeFoot ref) = pure ref
 
-newtype VRenderEnv f state = VRenderEnv
+type Operations f state =
   { getOriginChildren :: Effect (Array (VNode f state))
   , getLatestRenderedChildren :: Effect (Array (VNode f state))
   , renderChildren :: Node -> Array (VNode f state) -> Effect Unit
   }
+
+newtype VRenderEnv f state = VRenderEnv (Operations f state)
 
 newtype VRender f state a =
   VRender (ReaderT (VRenderEnv f state) Aff a)
@@ -90,24 +91,10 @@ derive newtype instance monadErrorVRender :: MonadError Error (VRender f state)
 derive newtype instance monadAskVRender :: MonadAsk (VRenderEnv f state) (VRender f state)
 derive newtype instance monadRecVRender :: MonadRec (VRender f state)
 
-getOriginChildren :: forall f state. VRender f state (Array (VNode f state))
-getOriginChildren = do
-  VRenderEnv os <- ask
-  liftEffect $ os.getOriginChildren
-
-getLatestRenderedChildren :: forall f state. VRender f state (Array (VNode f state))
-getLatestRenderedChildren = do
-  VRenderEnv os <- ask
-  liftEffect $ os.getLatestRenderedChildren
-
-renderChildren
-  :: forall f state
-   . Node
-  -> Array (VNode f state)
-  -> VRender f state Unit
-renderChildren parent children = do
-  VRenderEnv os <- ask
-  liftEffect $ os.renderChildren parent children
+operations :: forall f state. VRender f state (Operations f state)
+operations = do
+  VRenderEnv r <- ask
+  pure r
 
 runVRender
   :: forall f state a
