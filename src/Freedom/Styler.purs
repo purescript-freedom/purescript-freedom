@@ -52,10 +52,11 @@ createStyler = do
 
 registerStyle :: String -> Styler -> Effect String
 registerStyle style (Styler s) = do
-  let name = "d" <> generateHash style
+  let minified = minify style
+      name = "d" <> generateHash minified
   styles <- read s.stylesRef
   unless (member name styles) do
-    let output = minify $ replaceToken name style
+    let output = replaceToken name minified
     modify_ (insert name output) s.stylesRef
     emit Register s.emitter
   pure name
