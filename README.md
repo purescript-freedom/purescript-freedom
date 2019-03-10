@@ -8,6 +8,8 @@
 
 The new generation Virtual DOM for PureScript.
 
+No npm dependency.
+
 There is not document, and examples.
 If more star, I prioritize adding them.
 
