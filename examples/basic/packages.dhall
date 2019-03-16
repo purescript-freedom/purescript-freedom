@@ -142,7 +142,7 @@ let additions =
         , "freet"
         ]
         "https://github.com/purescript-freedom/purescript-freedom.git"
-        "v0.6.1"
+        "v0.6.2"
   , freedom-router =
       mkPackage
         [ "freedom"
