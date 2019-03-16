@@ -18,7 +18,7 @@ import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Reader (ReaderT, ask)
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Safely as Safe
-import Data.Array (filter, union)
+import Data.Array (filter, union, snoc)
 import Data.Maybe (Maybe(..))
 import Data.Nullable (null)
 import Data.String.Common as S
@@ -147,15 +147,15 @@ removeProp
   -> String
   -> Element
   -> ReaderT r Effect Unit
-removeProp "css" _ el = liftEffect do
-  maybeClassName <- E.getAttribute stylerAttributeName el
+removeProp "css" _ el = do
+  maybeClassName <- liftEffect $ E.getAttribute stylerAttributeName el
   case maybeClassName of
     Nothing -> pure unit
     Just generatedClassName ->
       removeClass generatedClassName el
 removeProp "class" val el = removeProp "className" val el
 removeProp "className" val el =
-  liftEffect $ Safe.for_ (classNames val) $ flip removeClass el
+  Safe.for_ (classNames val) $ flip removeClass el
 removeProp "style" _ el = liftEffect $ E.removeAttribute "style" el
 removeProp "list" _ el = liftEffect $ E.removeAttribute "list" el
 removeProp "form" _ el = liftEffect $ E.removeAttribute "form" el
@@ -177,10 +177,15 @@ setProp
   -> String
   -> Element
   -> ReaderT r Effect Unit
-setProp "css" val el = css val el
+setProp "css" val el = do
+  styler <- toStyler <$> ask
+  generatedClassName <- liftEffect $ registerStyle val styler
+  removeProp "css" "dummyVal" el
+  liftEffect $ E.setAttribute stylerAttributeName generatedClassName el
+  addClass generatedClassName el
 setProp "class" val el = setProp "className" val el
 setProp "className" val el =
-  liftEffect $ Safe.for_ (classNames val) $ flip addClass el
+  Safe.for_ (classNames val) $ flip addClass el
 setProp "style" val el =
   liftEffect $ E.setAttribute "style" val el
 setProp "list" val el =
@@ -221,35 +226,53 @@ updateProps currents nexts el =
         Just c, Just n | c == n -> pure unit
         _, Just n -> setProp name n el
 
-css
+classNames :: String -> Array String
+classNames val = filter (not <<< S.null) $ S.split (Pattern " ") val
+
+addClass
   :: forall r
    . IsRenderEnv r
   => String
   -> Element
   -> ReaderT r Effect Unit
-css cssString el = do
-  styler <- toStyler <$> ask
-  generatedClassName <- liftEffect $ registerStyle cssString styler
-  removeProp "css" "dummyVal" el
-  liftEffect $ E.setAttribute stylerAttributeName generatedClassName el
-  liftEffect $ addClass generatedClassName el
+addClass val el = do
+  isSVG <- toIsSVG <$> ask
+  liftEffect if isSVG then addSVGContext else add
+  where
+    add =
+      case fromElement el of
+        Nothing -> pure unit
+        Just html ->
+          classList html >>= flip DTL.add val
+    addSVGContext = do
+      maybeClassName <- E.getAttribute "class" el
+      flip (E.setAttribute "class") el case maybeClassName of
+        Nothing -> val
+        Just current ->
+          S.joinWith " " $ snoc (classNames current) val
 
-classNames :: String -> Array String
-classNames val = filter (not <<< S.null) $ S.split (Pattern " ") val
-
-addClass :: String -> Element -> Effect Unit
-addClass val el =
-  case fromElement el of
-    Nothing -> pure unit
-    Just html ->
-      classList html >>= flip DTL.add val
-
-removeClass :: String -> Element -> Effect Unit
-removeClass val el =
-  case fromElement el of
-    Nothing -> pure unit
-    Just html ->
-      classList html >>= flip DTL.remove val
+removeClass
+  :: forall r
+   . IsRenderEnv r
+  => String
+  -> Element
+  -> ReaderT r Effect Unit
+removeClass val el = do
+  isSVG <- toIsSVG <$> ask
+  liftEffect if isSVG then removeSVGContext else remove
+  where
+    remove =
+      case fromElement el of
+        Nothing -> pure unit
+        Just html ->
+          classList html >>= flip DTL.remove val
+    removeSVGContext = do
+      maybeClassName <- E.getAttribute "class" el
+      case maybeClassName of
+        Nothing -> pure unit
+        Just current ->
+          flip (E.setAttribute "class") el
+            $ S.joinWith " " $ filter (_ /= val) $ classNames current
 
 hasXlinkPrefix :: String -> Boolean
 hasXlinkPrefix = test xlinkRegex
