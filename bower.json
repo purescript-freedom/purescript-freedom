@@ -5,7 +5,7 @@
   "authors": [
     "Shinya Takahashi <s.takahashi313@gmail.com>"
   ],
-  "description": "The new generation Virtual DOM for PureScript",
+  "description": "Virtual DOM for PureScript",
   "keywords": [
     "purescript",
     "virtual-dom",
