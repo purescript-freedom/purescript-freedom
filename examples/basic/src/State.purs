@@ -5,7 +5,7 @@ import State.PostsIndex as PostsIndex
 import State.PostShow as PostShow
 import State.PostEdit as PostEdit
 
--- NOTE: This state is simplized. For production, you should consider state shape.
+-- NOTE: This state is simplified. For production, you should consider state shape.
 type State =
   { route :: Route.State
   , postsIndex :: PostsIndex.State
