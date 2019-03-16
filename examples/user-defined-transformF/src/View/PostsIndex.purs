@@ -78,12 +78,12 @@ deleteDialog maybePost =
     Nothing -> H.el $ H.div
     Just post ->
       portal' $ H.el $ H.div
-        # H.css overlayStyle
+        # H.css cssOverlay
         # H.onClick (const closeDeleteDialog)
         # H.kids
             [ H.el $ H.div
                 # H.onClick (liftEffect <<< stopPropagation)
-                # H.css boxStyle
+                # H.css cssBox
                 # H.kids
                     [ H.el $ H.h3 # H.kids [ H.t "Do you delete ?" ]
                     , H.el $ H.p # H.kids [ H.t post.title ]
@@ -98,7 +98,7 @@ deleteDialog maybePost =
             ]
   where
     portal' = portal { id: "delete-dialog-portal", z: 0 }
-    overlayStyle =
+    cssOverlay =
       """
       .& {
         position: fixed;
@@ -118,7 +118,7 @@ deleteDialog maybePost =
         to { opacity: 1 }
       }
       """
-    boxStyle =
+    cssBox =
       """
       .& {
         width: 40%;
