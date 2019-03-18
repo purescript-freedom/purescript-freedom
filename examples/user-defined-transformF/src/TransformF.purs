@@ -15,7 +15,7 @@ import Prelude
 import Control.Monad.Free.Trans (FreeT, liftFreeT)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Aff, attempt)
+import Effect.Aff (attempt)
 import Effect.Class (liftEffect)
 import Foreign (Foreign)
 import Freedom.Store (Query)
@@ -33,33 +33,34 @@ type VQuery state = FreeT (VQueryF state)
 
 derive instance functorVQuery :: Functor (VQueryF state)
 
-select :: forall state. VQuery state Aff state
+select :: forall state m. Monad m => VQuery state m state
 select = liftFreeT $ Select identity
 
-reduce :: forall state. (state -> state) -> VQuery state Aff Unit
+reduce :: forall state m. Monad m => (state -> state) -> VQuery state m Unit
 reduce f = liftFreeT $ Reduce f unit
 
 fetch
-  :: forall state
-   . M.URL
+  :: forall state m
+   . Monad m
+  => M.URL
   -> M.Method
   -> Maybe String
-  -> VQuery state Aff (Either Int Foreign)
+  -> VQuery state m (Either Int Foreign)
 fetch url method body = liftFreeT $ Fetch url method body identity
 
-fetchGet :: forall state a. ReadForeign a => String -> VQuery state Aff (Either Int a)
+fetchGet :: forall state m a. Monad m => ReadForeign a => String -> VQuery state m (Either Int a)
 fetchGet path =
   decode <$> fetch (toURL path) M.getMethod Nothing
 
-fetchPut :: forall state a b. WriteForeign a => ReadForeign b => String -> a -> VQuery state Aff (Either Int b)
+fetchPut :: forall state m a b. Monad m => WriteForeign a => ReadForeign b => String -> a -> VQuery state m (Either Int b)
 fetchPut path body =
   decode <$> fetchPut_ path body
 
-fetchPut_ :: forall state a. WriteForeign a => String -> a -> VQuery state Aff (Either Int Foreign)
+fetchPut_ :: forall state m a. Monad m => WriteForeign a => String -> a -> VQuery state m (Either Int Foreign)
 fetchPut_ path body =
   fetch (toURL path) M.putMethod $ Just $ writeJSON body
 
-fetchDelete_ :: forall state. String -> VQuery state Aff (Either Int Foreign)
+fetchDelete_ :: forall state m. Monad m => String -> VQuery state m (Either Int Foreign)
 fetchDelete_ path =
   fetch (toURL path) M.deleteMethod Nothing
 
