@@ -29,7 +29,7 @@ But I will add it to `package-sets`.
 
 `purescript-freedom` manages the whole state of your application in single state.
 And, for example, you can update state using `reduce` function and pure function that has `State -> State` type in a handler.
-This is one of big difference other UI libraries that update state through Algebraic data type.
+This is one of big difference other UI libraries that update state through algebraic data type.
 
 Like this:
 
@@ -78,3 +78,9 @@ view state =
 ```
 
 If you are interested in `purescript-freedom`, please take a look at [other samples](https://github.com/purescript-freedom/purescript-freedom/tree/master/examples) or [some packages](https://github.com/purescript-freedom) ;)
+
+## Next
+
+Please let me explain the concept if you like.
+
+[Concepts](https://github.com/purescript-freedom/purescript-freedom/tree/master/docs/02-Concepts.md)
