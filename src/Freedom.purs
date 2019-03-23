@@ -15,6 +15,7 @@ import Freedom.TransformF.Type (TransformF)
 import Freedom.VNode (VNode)
 import Effect (Effect)
 
+-- | The type of config
 type Config f state =
   { selector :: String
   , initialState :: state
@@ -23,6 +24,7 @@ type Config f state =
   , transformF :: Query state -> TransformF f state
   }
 
+-- | Launch app
 run :: forall f state. Functor (f state) => Config f state -> Effect Unit
 run { selector, initialState, view, subscriptions, transformF } = do
   styler <- createStyler
