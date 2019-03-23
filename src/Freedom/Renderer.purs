@@ -6,7 +6,7 @@ module Freedom.Renderer
 
 import Prelude
 
-import Control.Monad.Free.Trans (runFreeT, hoistFreeT)
+import Control.Monad.Free.Trans (hoistFreeT, runFreeT)
 import Control.Monad.Reader (ReaderT, ask, local, runReaderT, withReaderT)
 import Data.Array (take, (!!), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -16,11 +16,11 @@ import Effect.Class (liftEffect)
 import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read)
 import Freedom.Renderer.Diff (diff)
-import Freedom.Renderer.Util (class IsRenderEnv, class Affable)
+import Freedom.Renderer.Util (class Affable, class IsRenderEnv)
 import Freedom.Renderer.Util as Util
 import Freedom.Styler (Styler)
 import Freedom.TransformF.Type (TransformF)
-import Freedom.VNode (VNode(..), VElement(..), BridgeFoot, VRender, VRenderEnv(..), runVRender, bridge, fromBridgeFoot)
+import Freedom.VNode (BridgeFoot, VElement(..), VNode(..), VRender, VRenderEnv(..), bridge, fromBridgeFoot, runVRender)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.DOM.Element as E
 import Web.DOM.Node (Node, appendChild, insertBefore, removeChild)

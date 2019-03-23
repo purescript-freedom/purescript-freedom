@@ -7,13 +7,13 @@ import Prelude
 
 import Control.Monad.Free.Trans (runFreeT)
 import Data.Foldable (sequence_)
+import Effect (Effect)
 import Freedom.Renderer (createRenderer, render)
 import Freedom.Store (Query, createStore, query, subscribe)
 import Freedom.Styler (createStyler)
 import Freedom.Subscription (Subscription, runSubscription)
 import Freedom.TransformF.Type (TransformF)
 import Freedom.VNode (VNode)
-import Effect (Effect)
 
 -- | The type of config
 type Config f state =

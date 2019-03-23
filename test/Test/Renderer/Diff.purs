@@ -3,7 +3,7 @@ module Test.Renderer.Diff where
 import Prelude
 
 import Control.Safely as Safe
-import Data.Array (insertAt, deleteAt, (!!))
+import Data.Array (deleteAt, insertAt, (!!))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class (liftEffect)

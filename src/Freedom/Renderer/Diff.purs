@@ -8,12 +8,12 @@ module Freedom.Renderer.Diff
 import Prelude
 
 import Control.Monad.Rec.Class (class MonadRec, Step(..), tailRecM)
-import Data.Array ((!!), (..), length, snoc, unsafeIndex)
+import Data.Array (length, snoc, unsafeIndex, (!!), (..))
 import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Tuple (Tuple(..))
 import Foreign.Object as O
-import Freedom.VNode (VNode(..), VElement(..))
+import Freedom.VNode (VElement(..), VNode(..))
 import Partial.Unsafe (unsafePartial)
 
 class HasKey a where

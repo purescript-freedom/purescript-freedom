@@ -18,12 +18,12 @@ import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Reader (ReaderT, ask)
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Safely as Safe
-import Data.Array (filter, union, snoc)
+import Data.Array (filter, snoc, union)
 import Data.Maybe (Maybe(..))
 import Data.Nullable (null)
 import Data.String.Common as S
 import Data.String.Pattern (Pattern(..))
-import Data.String.Regex (Regex, test, replace)
+import Data.String.Regex (Regex, replace, test)
 import Data.String.Regex.Flags (noFlags)
 import Data.String.Regex.Unsafe (unsafeRegex)
 import Data.Tuple (Tuple, uncurry)
@@ -35,8 +35,8 @@ import Foreign.Object (Object)
 import Foreign.Object as Object
 import Freedom.Styler (Styler, registerStyle)
 import Freedom.VNode (VObject)
-import Web.DOM.Document (Document, createElement, createElementNS, createTextNode)
 import Web.DOM.DOMTokenList as DTL
+import Web.DOM.Document (Document, createElement, createElementNS, createTextNode)
 import Web.DOM.Element (Element)
 import Web.DOM.Element as E
 import Web.DOM.Node (Node, childNodes, setTextContent)
@@ -45,8 +45,8 @@ import Web.DOM.Text (Text)
 import Web.Event.Event (Event)
 import Web.Event.EventTarget (eventListener)
 import Web.HTML (window)
-import Web.HTML.HTMLElement (fromElement, classList)
 import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.HTMLElement (classList, fromElement)
 import Web.HTML.Window (document)
 
 class IsRenderEnv a where
