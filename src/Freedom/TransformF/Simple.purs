@@ -15,12 +15,15 @@ type VQuery state = FreeT (VQueryF state)
 
 derive instance functorVQuery :: Functor (VQueryF state)
 
+-- | Get app state.
 select :: forall state m. Monad m => VQuery state m state
 select = liftFreeT $ Select identity
 
+-- | Modify app state.
 reduce :: forall state m. Monad m => (state -> state) -> VQuery state m Unit
 reduce f = liftFreeT $ Reduce f unit
 
+-- | An interpreter for `FreeT`.
 transformF :: forall state. Query state -> TransformF VQueryF state
 transformF query (Select k) =
   liftEffect $ k <$> query.select
