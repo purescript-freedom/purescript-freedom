@@ -86,7 +86,7 @@ In `purescript-freedom`, such UI state is managed in global state only.
 Because `purescript-freedom` doesn't want to get people lost when writing codes.
 
 The latter examples are virtual list, css transition (with view lifecycle).
-In a common virtual DOM, views that affect the drawing process like these are implemented using local state.
+In a common virtual DOM, views that affect the rendering process like these are implemented using local state.
 And its local state is completely unrelated to the domain logic.
 In such case, We will think "want to hide implementation details in its view".
 
@@ -98,7 +98,7 @@ But `purescript-freedom` has another approach for "Has no possibility to become 
 
 `purescript-freedom` has mechanism called `OperativeElement`.
 
-Simply put, it is a mechanism that child nodes are not drawn immediately, and allows users to determine the drawing timing and parent node.
+Simply put, it is a mechanism that child nodes are not rendered immediately, and allows users to determine the rendering timing and parent node.
 
 By this mechanism, in these case(e.g. virtual list, css transition), you can implement some UI with hiding implementation should be hide, without user defined local state.
 
@@ -122,7 +122,7 @@ Many libraries of "CSS in JS" let people write styles in JavaScript, and such li
 
 `purescript-freedom` also has such mechanism, so you can write styles in PureScript.
 
-It evaluates styles gradually as each node is generated because styles evaluation is incorporated in rendering process.
+It evaluates styles gradually as each node is rendered because styles evaluation is incorporated in rendering process.
 
 See an [example](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/View/PostsIndex.purs#L68-L79).
 
@@ -131,3 +131,9 @@ As you can see, write styles with css string, and manage styles close to a view.
 `purescript-freedom` doesn't have any motivation to managed typed-CSS, because I think CSS's inherent difficulty doesn't improve when it gets type.
 
 You can use other css libraries if you want.
+
+## Next
+
+Please let me explain the architecture if you like.
+
+[Architecture](https://github.com/purescript-freedom/purescript-freedom/tree/master/docs/03-Architecture.md)
