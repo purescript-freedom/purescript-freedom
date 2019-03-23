@@ -6,18 +6,17 @@
 
 [![Latest release](http://img.shields.io/github/release/purescript-freedom/purescript-freedom.svg)](https://github.com/purescript-freedom/purescript-freedom/releases)
 
-Virtual DOM for PureScript.
+Virtual DOM for PureScript. No npm dependencies required.
 
-There are not documents, coming soon.
+[Guide](https://github.com/purescript-freedom/purescript-freedom/tree/master/docs)
 
 Go to [examples](https://github.com/purescript-freedom/purescript-freedom/tree/master/examples) or [some packages](https://github.com/purescript-freedom) ;)
 
 ## Concepts
 - Less boilerplate
 - Testable and customizable effect
-- Customizable rendering (e.g. portal, css transition, virtual list, and so on) without global and local state
+- Customizable rendering
 - CSS with auto-generated class
-- No npm dependency
 
 ## Installation
 
