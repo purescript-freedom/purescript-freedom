@@ -71,7 +71,7 @@ We often consider where should UI state place.
 
 There are 2 patterns.
 
-- Global state: it can be referenced or modified the out of view.
+- Global state (or outer state): it can be referenced or modified the out of view.
 - Local state: it is referenced or modified in its view only. 
 
 And local state splits into 2 patterns.
