@@ -18,12 +18,6 @@ Go to [examples](https://github.com/purescript-freedom/purescript-freedom/tree/m
 - Customizable rendering
 - CSS with auto-generated class
 
-## Installation
-
-```
-bower install purescript-freedom
-```
-
 ## Documentation
 
 Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-freedom).

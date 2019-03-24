@@ -109,40 +109,13 @@ let additions =
 -}
 
 let mkPackage =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.3-20190227/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.3-20190323-2/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
 
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.3-20190227/src/packages.dhall sha256:eb8ae389eb218f1aad4c20054b8cce6c04a861a567aff72abd9111609178e986
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.3-20190323-2/src/packages.dhall sha256:75491c6ef6587959ebf80bb1ac4d706dfac83d8100230cf85dc4efe6cf918460
 
 let overrides = {=}
 
-let additions =
-  { safely =
-      mkPackage
-        [ "freet"
-        , "lists"
-        ]
-        "https://github.com/paf31/purescript-safely.git"
-        "v4.0.0"
-  , simple-emitter =
-      mkPackage
-        [ "refs"
-        , "ordered-collections"
-        ]
-        "https://github.com/oreshinya/purescript-simple-emitter.git"
-        "v1.0.0"
-  , freedom =
-      mkPackage
-        [ "web-html"
-        , "simple-emitter"
-        , "console"
-        , "safely"
-        , "foreign-object"
-        , "aff"
-        , "freet"
-        ]
-        "https://github.com/purescript-freedom/purescript-freedom.git"
-        "v0.6.2"
-  }
+let additions = {=}
 
 in  upstream ⫽ overrides ⫽ additions

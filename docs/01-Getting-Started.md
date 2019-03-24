@@ -16,14 +16,9 @@ $ bower install --save purescript-freedom
 
 ### Spago
 
-Now, `purescript-freedom` isn't included in `package-sets`.
-You edit `packages.dhall` like [this](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/packages.dhall), and you can install freedom.
-
 ```
 $ spago install freedom
 ```
-
-But I will add it to `package-sets`.
 
 ## Example
 
