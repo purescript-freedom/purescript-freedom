@@ -59,7 +59,9 @@ Its type is `FreeT (f state) Aff Unit`, and `f state` is `Functor` that you want
 
 You use its effect in the whole of your app.
 
-The transformation of `FreeT` that is used in your app, can be pass to config when initialize app with `Freedom.run`, so you can customize effect and make testable easy.
+The transformation of `FreeT` that is used in your app, can be pass to config when initialize app with `Freedom.run`.
+
+Because using `FreeT`, you can customize effect and make testable easy.
 
 But `purescript-freedom` provides simple transformation in `Freedom.TransformF.Simple`, you can use it if you like.
 
