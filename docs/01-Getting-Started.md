@@ -23,8 +23,10 @@ $ spago install freedom
 ## Example
 
 `purescript-freedom` manages the whole state of your application in single state.
+
 And, for example, you can update state using `reduce` function and pure function that has `State -> State` type in a handler.
-This is one of big difference other UI libraries that update state through algebraic data type.
+
+This is **one of big difference** from other UI libraries that update state through algebraic data type.
 
 Like this:
 
