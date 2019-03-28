@@ -82,14 +82,23 @@ And local state splits into 2 patterns.
 - Has no possibility to become global state
 
 In my experience, about the former, where it is managed depends on the team's policy.
+
 In a team, the former is managed in local state, In other team, it is managed in global state.
+
 Essentially both are fine.
+
+But some team has no policy to manage local state, codes become messy in such case.
+
 In `purescript-freedom`, such UI state is managed in global state only.
+
 Because `purescript-freedom` doesn't want to get people lost when writing codes.
 
 The latter examples are virtual list, css transition (with view lifecycle).
+
 In a common virtual DOM, views that affect the rendering process like these are implemented using local state.
+
 And its local state is completely unrelated to the domain logic.
+
 In such case, We will think "want to hide implementation details in its view".
 
 But `purescript-freedom` has constraint that it can't manage user defined local state in a view.
