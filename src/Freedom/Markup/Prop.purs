@@ -8,6 +8,49 @@ import Data.String.Common (joinWith)
 import Freedom.Markup.Common (prop)
 import Freedom.VNode (VObject)
 
+-- | Define styles with CSS string.
+-- |
+-- | It generates a hash string as class name from CSS string, and the generated class name is used automatically.
+-- |
+-- | ```purescript
+-- | justDiv :: Html
+-- | justDiv =
+-- |   H.el $ H.div # H.css styles
+-- |
+-- | styles :: String
+-- | styles =
+-- |   """
+-- |   .& {
+-- |     width: 100px;
+-- |     height: 100px;
+-- |   }
+-- |   .&:hover {
+-- |     width: 100px;
+-- |     height: 100px;
+-- |   }
+-- |   .&:hover .selected {
+-- |     color: blue;
+-- |   }
+-- |   """
+-- | ```
+-- |
+-- | `&` in the CSS string is replaced with the generated class name, and output it as stylesheet.
+-- |
+-- | Like this:
+-- |
+-- | ```css
+-- | .dz66dqm {
+-- |   width: 100px;
+-- |   height: 100px;
+-- | }
+-- | .dz66dqm:hover {
+-- |   width: 100px;
+-- |   height: 100px;
+-- | }
+-- | .dz66dqm:hover .selected {
+-- |   color: blue;
+-- | }
+-- | ```
 css
   :: forall f state m
    . Functor (f state)
