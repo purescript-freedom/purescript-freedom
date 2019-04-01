@@ -5,7 +5,7 @@
   "authors": [
     "Shinya Takahashi <s.takahashi313@gmail.com>"
   ],
-  "description": "Virtual DOM for PureScript",
+  "description": "Type-safe UI library for PureScript",
   "keywords": [
     "purescript",
     "virtual-dom",
