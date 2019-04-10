@@ -35,5 +35,8 @@
   },
   "devDependencies": {
     "purescript-test-unit": "^14.0.0"
+  },
+  "resolutions": {
+    "purescript-typelevel-prelude": "^4.0.0"
   }
 }
