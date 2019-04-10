@@ -68,6 +68,8 @@ Pure functions to update are used in `Action`.
 
 NOTE: The state shape is very important for your productivity, so you should consider it seriously.
 
+NOTE: If you will implement complex UI, check [purescript-identy](https://github.com/oreshinya/purescript-identy).
+
 ## Action
 
 The role of `Action` is that it runs effects such as communicate with server or browser, get current app state, modify app state and so on.
@@ -671,3 +673,7 @@ Please use them if you want.
 - [purescript-freedom-transition](https://github.com/purescript-freedom/purescript-freedom-transition)
 - [purescript-freedom-virtualized](https://github.com/purescript-freedom/purescript-freedom-virtualized)
 - [purescript-freedom-window-resize](https://github.com/purescript-freedom/purescript-freedom-window-resize)
+
+## Related packages
+
+- [purescript-identy](https://github.com/oreshinya/purescript-identy)
