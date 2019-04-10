@@ -25,11 +25,11 @@
     "output"
   ],
   "dependencies": {
-    "purescript-web-html": "^1.2.0",
+    "purescript-web-html": "^2.0.0",
     "purescript-simple-emitter": "^1.0.0",
     "purescript-console": "^4.2.0",
     "purescript-safely": "^4.0.0",
-    "purescript-foreign-object": "^1.1.0",
+    "purescript-foreign-object": "^2.0.1",
     "purescript-aff": "^5.1.0",
     "purescript-freet": "^4.0.0"
   },
