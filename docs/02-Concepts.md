@@ -106,7 +106,7 @@ But `purescript-freedom` has another approach for "has no possibility to become 
 
 Simply put, it is a mechanism that child nodes are not rendered immediately, and allows users to determine the rendering timing and parent node.
 
-By this mechanism, in these cases (e.g. virtual list, css transition), you can implement some UI hiding then implementation where it should be hidden, without user defined local state.
+By this mechanism, in these example cases (e.g. virtual list, css transition), you can implement a UI, hiding implementation where it should be hidden, without user defined local state.
 
 And its mechanism solves other problems.
 
