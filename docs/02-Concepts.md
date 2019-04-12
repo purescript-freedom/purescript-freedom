@@ -87,7 +87,7 @@ In my experience, about the former, where it is managed depends on the team's po
 In a team, the former is managed in local state, In other team, it is managed in global state.
 Essentially both are fine.
 
-But some teams have no policy to manage local state, code become messy in such case.
+But some teams have no policy to manage local state, and as a result code often becomes messy.
 
 In `purescript-freedom`, such UI state is managed in global state only.
 Because `purescript-freedom` doesn't want to get people lost when writing codes.
