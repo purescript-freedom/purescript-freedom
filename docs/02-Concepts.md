@@ -7,13 +7,14 @@ This document explains them.
 
 PureScript has some great UI libraries, but they have some of the following pains:
 
-- Many codes for updating state through algebraic data type
-- Many type variables
-- Much bother to treat effects
+- A lot of code for updating state through algebraic data type
+- A lot of type variables
+- Treating effects is cumbersome
 
-It depends on the package if you have these pains, and they are not always evil,  but I think some people have whichever pain.
+While not inherently evil, depending on your chosen package, project, and team, 
+you may have shared these same pain points.
 
-`purescript-freedom` relieves these pains with the following approachs:
+`purescript-freedom` looks to relieve these pains with the following approachs:
 
 - The view have constraint that it can't manage user defined local state in it
 - For updating state, Use `reduce` function that can be called specific(e.g. event handler) place and pure state transition function
@@ -35,9 +36,10 @@ See [examples](https://github.com/purescript-freedom/purescript-freedom/blob/mas
 
 `purescript-freedom` relieves some pains, but it have new pain.
 
-`purescript-freedom` doesn't have yet dev tool that have time travel debugging, but can create it.
-But, in its tool, each state transitions can't have name when time travel debugging.
-Because it uses just pure function to update state without through algebraic data type.
+`purescript-freedom` doesn't yet have a dev tool with time-travel debugging, but it can be created.
+However, because the library uses just pure function to update state without going through algebraic data type,
+the state transitions of this tool cannot have names when time-travel debugging.
+
 
 This is trade-off.
 
@@ -57,13 +59,13 @@ fetchCount = do
 
 Its type is `FreeT (f state) Aff Unit`, and `f state` is `Functor` that you want.
 
-You use its effect in the whole of your app.
+You use its effect in your whole app.
 
-The transformation of `FreeT` that is used in your app, can be pass to config when initialize app with `Freedom.run`.
+The transformation of `FreeT` that is used in your app, can be pass to config when initializing the app with `Freedom.run`.
 
-Because using `FreeT`, you can customize effect and make testable easy.
+Because it's using `FreeT`, you can customize effect and make testable easy.
 
-But `purescript-freedom` provides simple transformation in `Freedom.TransformF.Simple`, you can use it if you like.
+Alternatively in simpler cases, `purescript-freedom` provides simple transformation in `Freedom.TransformF.Simple`.
 
 See [an example](https://github.com/purescript-freedom/purescript-freedom/tree/master/examples/user-defined-transformF) that uses user defined transformation and `Functor`.
 
@@ -85,36 +87,36 @@ In my experience, about the former, where it is managed depends on the team's po
 In a team, the former is managed in local state, In other team, it is managed in global state.
 Essentially both are fine.
 
-But some team has no policy to manage local state, codes become messy in such case.
+But some teams have no policy to manage local state, code become messy in such case.
 
 In `purescript-freedom`, such UI state is managed in global state only.
 Because `purescript-freedom` doesn't want to get people lost when writing codes.
 
-The latter examples are virtual list, css transition (with view lifecycle).
-In a common virtual DOM, views that affect the rendering process like these are implemented using local state.
+The latter examples are virtual list, CSS transition (with view lifecycle).
+In many common virtual DOMs, views that affect the rendering process like these are implemented using local state.
 And its local state is completely unrelated to the domain logic.
-In such case, We will think "want to hide implementation details in its view".
+In such case, we will think "I want to hide implementation details in its view".
 But `purescript-freedom` has constraint that it can't manage user defined local state in a view.
 
 Umm...
 
-But `purescript-freedom` has another approach for "Has no possibility to become global state".
+But `purescript-freedom` has another approach for "has no possibility to become global state".
 
 `purescript-freedom` has mechanism called `OperativeElement`.
 
 Simply put, it is a mechanism that child nodes are not rendered immediately, and allows users to determine the rendering timing and parent node.
 
-By this mechanism, in these case(e.g. virtual list, css transition), you can implement some UI with hiding implementation should be hide, without user defined local state.
+By this mechanism, in these cases (e.g. virtual list, css transition), you can implement some UI hiding then implementation where it should be hidden, without user defined local state.
 
 And its mechanism solves other problems.
 
 Sometimes, we want to ignore DOM hierarchy when render node.
-For example, the portal (like the portal of React.js) that is used often for modal and dropdown and so on.
+For example, the portal—like the portal of React.js—that is used often for modal and dropdown and so on.
 You can implement it with `OperativeElement`.
 
-In summary, it is very useful in `purescript-freedom` that can't manage user defined local state.
+In summary, it is very useful in `purescript-freedom` that it can't manage user defined local state.
 
-`purescript-freedom` has already some packages used its mechanism.
+`purescript-freedom` has already some packages used in its mechanism.
 
 Please check [packages](https://github.com/purescript-freedom) if you like.
 
@@ -132,9 +134,9 @@ See an [example](https://github.com/purescript-freedom/purescript-freedom/blob/m
 
 As you can see, write styles with css string, and manage styles close to a view.
 
-`purescript-freedom` doesn't have any motivation to managed typed-CSS, because I think CSS's inherent difficulty doesn't improve when it gets type.
+`purescript-freedom` doesn't have any motivation to manage typed-CSS, because I think CSS's inherent difficulty doesn't improve when it gets typed.
 
-You can use other css libraries if you want.
+You can use other CSS libraries if you want.
 
 ## Next
 
