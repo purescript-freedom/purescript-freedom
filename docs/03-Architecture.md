@@ -643,7 +643,7 @@ For your reference, if you do not add keys, `purescript-freedom` generates key f
 
 `purescript-freedom` indentify `VNode` by keys, lifecycle mechanism is supported by it.
 
-If Lifecycle is not triggered, you should consider using keys.
+If Lifecycle is not triggered correctly, you should consider using keys.
 
 ### Where is a markup helper I want ?
 
