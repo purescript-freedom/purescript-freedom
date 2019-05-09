@@ -17,6 +17,7 @@ you may have shared these same pain points.
 `purescript-freedom` looks to relieve these pains with the following approachs:
 
 - The view have constraint that it can't manage user defined local state in it
+  - Are you uneasy that it can't manage user defined local state? Please read this doc to the last ;)
 - For updating state, Use `reduce` function that can be called specific(e.g. event handler) place and pure state transition function
 - Effects like `Aff` can be called with `reduce` in an action
 
