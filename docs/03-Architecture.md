@@ -256,7 +256,9 @@ See [another example of `Subscription`](https://github.com/purescript-freedom/pu
 
 Here is the detail about `View`.
 
-`View` is just a mapping of `State` like `state -> VNode f state`.
+The idea in purescript-freedom is that the essence of the application is the state itself.
+
+So `View` is just a mapping of `State` like `state -> VNode f state`.
 
 `f` is `Functor` for `FreeT`, and `state` is app state.
 
