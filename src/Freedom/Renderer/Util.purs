@@ -18,7 +18,7 @@ import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Reader (ReaderT, ask)
 import Control.Monad.Rec.Class (class MonadRec)
 import Control.Safely as Safe
-import Data.Array (filter, snoc, union)
+import Data.Array (filter, notElem, snoc, union)
 import Data.Maybe (Maybe(..))
 import Data.Nullable (null)
 import Data.String.Common as S
@@ -223,8 +223,18 @@ updateProps currents nexts el =
       case Object.lookup name currents, Object.lookup name nexts of
         Nothing, Nothing -> pure unit
         Just c, Nothing -> removeProp name c el
-        Just c, Just n | c == n -> pure unit
-        _, Just n -> setProp name n el
+        Nothing, Just n -> setProp name n el
+        Just c, Just n
+          | c == n -> pure unit
+          | notElem name [ "class", "className" ] -> setProp name n el
+          | otherwise ->
+              let currentClasses = classNames c
+                  nextClasses = classNames n
+                  removeTargets = filter (flip notElem nextClasses) currentClasses
+                  addTargets = filter (flip notElem currentClasses) nextClasses
+               in do
+                  removeProp name (S.joinWith " " removeTargets) el
+                  setProp name (S.joinWith " " addTargets) el
 
 classNames :: String -> Array String
 classNames val = filter (not <<< S.null) $ S.split (Pattern " ") val
