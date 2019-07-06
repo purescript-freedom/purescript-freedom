@@ -4,12 +4,12 @@
   "scripts": {
     "clean": "rm -rf output",
     "spago": "spago",
-    "start": "spago build --global-cache=skip && parcel ./public/index.html"
+    "start": "spago build && parcel ./public/index.html"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "parcel": "^1.12.3",
     "purescript": "^0.13.0",
-    "spago": "^0.8.3"
+    "spago": "^0.8.5"
   }
 }

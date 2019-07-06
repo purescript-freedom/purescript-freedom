@@ -8,4 +8,6 @@ You can edit this file as you like.
     [ "freedom" ]
 , packages =
     ./packages.dhall
+, sources =
+    [ "src/**/*.purs" ]
 }
