@@ -6,7 +6,7 @@
 
 [![Latest release](http://img.shields.io/github/release/purescript-freedom/purescript-freedom.svg)](https://github.com/purescript-freedom/purescript-freedom/releases)
 
-A type-safe UI library for PureScript. No npm dependencies required.
+A practical type-safe UI library for PureScript. No npm dependencies required.
 
 [Guide](https://github.com/purescript-freedom/purescript-freedom/tree/master/docs)
 
