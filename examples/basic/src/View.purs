@@ -70,8 +70,8 @@ route state =
     PostsIndex ->
       H.keyed "postsIndex" $ PostsIndex.view state.postsIndex
     PostShow postId ->
-      H.keyed "postShow" $ PostShow.view postId state.postShow
+      H.keyed ("postShow" <> show postId) $ PostShow.view postId state.postShow
     PostEdit postId ->
-      H.keyed "postEdit" $ PostEdit.view postId state.postEdit
+      H.keyed ("postEdit" <> show postId) $ PostEdit.view postId state.postEdit
     NotFound ->
       H.keyed "notFound" $ NotFound.view
