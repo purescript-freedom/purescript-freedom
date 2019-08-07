@@ -5,10 +5,11 @@ module View.PostEdit
 import Prelude
 
 import Action.PostEdit (fetchPost, updatePost)
-import Data.Maybe (Maybe(..), isNothing)
+import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Effect.Class (liftEffect)
 import Entity.Post (updateTitle, updateBody)
+import Entity.Request (Request(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
 import Record as R
@@ -30,11 +31,12 @@ view postId { request, update, post } =
       Nothing -> NotFound.view
       Just post' ->
         H.el $ H.div # H.kids
-          [ if isNothing update.statusCode
-              then H.el $ H.span
-              else H.el $ H.p
-                      # H.css cssErr
-                      # H.kids [ H.t "Sorry..., something went wrong." ]
+          [ case update of
+              Failure _ ->
+                H.el $ H.p
+                  # H.css cssErr
+                  # H.kids [ H.t "Sorry..., something went wrong." ]
+              _ -> H.el $ H.span
           , H.el $ H.h2 # H.kids
               [ H.el $ H.input
                   # H.onChange changeTitle
@@ -54,7 +56,7 @@ view postId { request, update, post } =
                       # H.kids [ H.t "CANCEL" ]
                   , H.el $ H.button
                       # H.onClick (const updatePost)
-                      # H.kids [ H.t if update.requesting then "SENDING..." else "SAVE" ]
+                      # H.kids [ H.t if update == Requesting then "SENDING..." else "SAVE" ]
                   ]
           ]
   where

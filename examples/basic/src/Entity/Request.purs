@@ -1,17 +1,19 @@
 module Entity.Request where
 
-import Data.Maybe (Maybe(..))
+import Prelude
 
-type Request =
-  { requesting :: Boolean
-  , statusCode :: Maybe Int
-  }
+data Request
+  = Neutral
+  | Requesting
+  | Failure Int
+
+derive instance eqRequest :: Eq Request
 
 start :: Request -> Request
-start = _ { requesting = true, statusCode = Nothing }
+start = const Requesting
 
 success :: Request -> Request
-success = _ { requesting = false, statusCode = Nothing }
+success = const Neutral
 
 failure :: Int -> Request -> Request
-failure statusCode = _ { requesting = false, statusCode = Just statusCode }
+failure statusCode = const $ Failure statusCode
