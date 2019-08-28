@@ -6,12 +6,12 @@ import Prelude
 
 import Freedom.Markup as H
 import Freedom.Router (link)
+import PostsIndex.View as PostsIndex
+import PostShow.View as PostShow
+import PostEdit.View as PostEdit
 import State (State)
 import State.Route (Route(..))
 import Type (Html)
-import View.PostsIndex as PostsIndex
-import View.PostShow as PostShow
-import View.PostEdit as PostEdit
 import View.NotFound as NotFound
 
 view :: State -> Html

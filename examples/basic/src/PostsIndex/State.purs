@@ -1,4 +1,4 @@
-module State.PostsIndex where
+module PostsIndex.State where
 
 import Data.Maybe (Maybe(..))
 import Entity.Post (Post)

@@ -1,33 +1,22 @@
-module View.PostsIndex
+module PostsIndex.View
   ( view
   ) where
 
 import Prelude
 
-import API as API
-import Control.Monad.Trans.Class (lift)
-import Data.Array (delete)
-import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Data.Symbol (SProxy(..))
-import Effect.Class (liftEffect)
 import Entity.Post (Post)
-import Entity.Request (start, success, failure)
 import Freedom.Markup as H
 import Freedom.Portal (portal)
 import Freedom.Router (link)
-import Freedom.TransformF.Simple (select, reduce)
-import Record as R
-import State.PostsIndex (State)
-import Type (Html, Action)
-import View.Common (withRequest)
-import Web.Event.Event (stopPropagation)
-
--- View
+import PostsIndex.Action (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog, blockEvent)
+import PostsIndex.State (State)
+import Type (Html)
+import View.Request as Request
 
 view :: State -> Html
 view { request, posts, deleteTargetPost } =
-  withRequest request fetchPosts
+  Request.view request fetchPosts
     $ H.el $ H.div # H.kids
         [ H.el $ H.h2 # H.kids [ H.t "Latest Posts" ]
         , H.el $ H.ul # H.css cssUl # H.kids (postItem <$> posts)
@@ -89,7 +78,7 @@ deleteDialog maybePost =
         # H.onClick (const closeDeleteDialog)
         # H.kids
             [ H.el $ H.div
-                # H.onClick (liftEffect <<< stopPropagation)
+                # H.onClick blockEvent
                 # H.css cssBox
                 # H.kids
                     [ H.el $ H.h3 # H.kids [ H.t "Do you delete ?" ]
@@ -135,48 +124,3 @@ deleteDialog maybePost =
         border-radius: 8px;
       }
       """
-
--- Action
-
-fetchPosts :: Action
-fetchPosts = do
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.modify (SProxy :: _ "request")
-    $ start
-  res <- lift $ API.get "/posts"
-  case res of
-    Left statusCode ->
-      reduce
-        $ R.modify (SProxy :: _ "postsIndex")
-        $ R.modify (SProxy :: _ "request")
-        $ failure statusCode
-    Right posts ->
-      reduce
-        $ R.modify (SProxy :: _ "postsIndex")
-        $ R.modify (SProxy :: _ "request") success
-        >>> R.set (SProxy :: _ "posts") posts
-
-deletePost :: Action
-deletePost = do
-  post <- select <#> _.postsIndex.deleteTargetPost
-  case post of
-    Nothing -> pure unit
-    Just post' -> do
-      reduce
-        $ R.modify (SProxy :: _ "postsIndex")
-        $ R.modify (SProxy :: _ "posts") (delete post')
-        >>> R.set (SProxy :: _ "deleteTargetPost") Nothing
-      lift $ void $ API.delete_ $ "/posts/" <> show post'.id
-
-openDeleteDialog :: Post -> Action
-openDeleteDialog post =
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.set (SProxy :: _ "deleteTargetPost") $ Just post
-
-closeDeleteDialog :: Action
-closeDeleteDialog =
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.set (SProxy :: _ "deleteTargetPost") Nothing

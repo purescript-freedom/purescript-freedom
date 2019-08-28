@@ -1,4 +1,4 @@
-module State.PostEdit where
+module PostEdit.State where
 
 import Data.Maybe (Maybe(..))
 import Entity.Post (Post)

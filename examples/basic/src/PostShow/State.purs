@@ -1,4 +1,4 @@
-module State.PostShow where
+module PostShow.State where
 
 import Data.Maybe (Maybe(..))
 import Entity.Post (Post)

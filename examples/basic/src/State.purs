@@ -1,9 +1,9 @@
 module State where
 
+import PostsIndex.State as PostsIndex
+import PostShow.State as PostShow
+import PostEdit.State as PostEdit
 import State.Route as Route
-import State.PostsIndex as PostsIndex
-import State.PostShow as PostShow
-import State.PostEdit as PostEdit
 
 -- NOTE: This state is simplified. For production, you should consider state shape.
 type State =
