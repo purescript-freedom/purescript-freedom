@@ -1,4 +1,4 @@
-module Action.PostsIndex where
+module PostsIndex.Action where
 
 import Prelude
 
@@ -6,11 +6,13 @@ import Data.Array (delete)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
+import Effect.Class (liftEffect)
 import Entity.Post (Post)
 import Entity.Request (start, success, failure)
 import Record as R
 import TransformF (select, reduce, fetchGet, fetchDelete_)
 import Type (Action)
+import Web.Event.Event (Event, stopPropagation)
 
 fetchPosts :: Action
 fetchPosts = do
@@ -54,3 +56,6 @@ closeDeleteDialog =
   reduce
     $ R.modify (SProxy :: _ "postsIndex")
     $ R.set (SProxy :: _ "deleteTargetPost") Nothing
+
+blockEvent :: Event -> Action
+blockEvent = liftEffect <<< stopPropagation

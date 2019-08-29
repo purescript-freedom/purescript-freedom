@@ -1,21 +1,21 @@
-module View.PostShow
+module PostShow.View
   ( view
   ) where
 
 import Prelude
 
-import Action.PostShow (fetchPost)
 import Data.Maybe (Maybe(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
-import State.PostShow (State)
+import PostShow.Action (fetchPost)
+import PostShow.State (State)
 import Type (Html)
-import View.Common (withRequest)
 import View.NotFound as NotFound
+import View.Request as Request
 
 view :: Int -> State -> Html
 view postId { request, post } =
-  withRequest request (fetchPost postId)
+  Request.view request (fetchPost postId)
     case post of
       Nothing -> NotFound.view
       Just post' ->

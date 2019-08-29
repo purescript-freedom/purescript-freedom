@@ -1,26 +1,22 @@
-module View.PostsIndex
+module PostsIndex.View
   ( view
   ) where
 
 import Prelude
 
-import Action.PostsIndex (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog)
 import Data.Maybe (Maybe(..))
-import Effect.Class (liftEffect)
 import Entity.Post (Post)
 import Freedom.Markup as H
 import Freedom.Portal (portal)
 import Freedom.Router (link)
-import State.PostsIndex (State)
+import PostsIndex.Action (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog, blockEvent)
+import PostsIndex.State (State)
 import Type (Html)
-import View.Common (withRequest)
-import Web.Event.Event (stopPropagation)
-
--- View
+import View.Request as Request
 
 view :: State -> Html
 view { request, posts, deleteTargetPost } =
-  withRequest request fetchPosts
+  Request.view request fetchPosts
     $ H.el $ H.div # H.kids
         [ H.el $ H.h2 # H.kids [ H.t "Latest Posts" ]
         , H.el $ H.ul # H.css cssUl # H.kids (postItem <$> posts)
@@ -82,7 +78,7 @@ deleteDialog maybePost =
         # H.onClick (const closeDeleteDialog)
         # H.kids
             [ H.el $ H.div
-                # H.onClick (liftEffect <<< stopPropagation)
+                # H.onClick blockEvent
                 # H.css cssBox
                 # H.kids
                     [ H.el $ H.h3 # H.kids [ H.t "Do you delete ?" ]

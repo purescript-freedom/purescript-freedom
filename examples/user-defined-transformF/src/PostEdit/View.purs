@@ -1,32 +1,22 @@
-module View.PostEdit
+module PostEdit.View
   ( view
   ) where
 
 import Prelude
 
-import Action.PostEdit (fetchPost, updatePost)
 import Data.Maybe (Maybe(..))
-import Data.Symbol (SProxy(..))
-import Effect.Class (liftEffect)
-import Entity.Post (updateTitle, updateBody)
 import Entity.Request (Request(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
-import Record as R
-import State.PostEdit (State)
-import TransformF (reduce)
-import Type (Html, Action)
-import View.Common (withRequest)
+import PostEdit.Action (fetchPost, updatePost, changeTitle, changeBody)
+import PostEdit.State (State)
+import Type (Html)
 import View.NotFound as NotFound
-import Web.Event.Event (Event, target)
-import Web.HTML.HTMLInputElement as Input
-import Web.HTML.HTMLTextAreaElement as TextArea
-
--- View
+import View.Request as Request
 
 view :: Int -> State -> Html
 view postId { request, update, post } =
-  withRequest request (fetchPost postId)
+  Request.view request (fetchPost postId)
     case post of
       Nothing -> NotFound.view
       Just post' ->
@@ -91,27 +81,3 @@ view postId { request, update, post } =
         padding: 16px 0;
       }
       """
-
--- Action
-
-changeTitle :: Event -> Action
-changeTitle evt =
-  case Input.fromEventTarget <$> target evt of
-    Just (Just el) -> do
-      title <- liftEffect $ Input.value el
-      reduce
-        $ R.modify (SProxy :: _ "postEdit")
-        $ R.modify (SProxy :: _ "post")
-        $ map (updateTitle title)
-    _ -> pure unit
-
-changeBody :: Event -> Action
-changeBody evt =
-  case TextArea.fromEventTarget <$> target evt of
-    Just (Just el) -> do
-      body <- liftEffect $ TextArea.value el
-      reduce
-        $ R.modify (SProxy :: _ "postEdit")
-        $ R.modify (SProxy :: _ "post")
-        $ map (updateBody body)
-    _ -> pure unit

@@ -1,4 +1,4 @@
-module Action.PostShow where
+module PostShow.Action where
 
 import Prelude
 
