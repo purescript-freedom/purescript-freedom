@@ -18,22 +18,22 @@ import Web.HTML.HTMLTextAreaElement as TextArea
 
 fetchPost :: Int -> Action
 fetchPost postId = do
-  reduce
-    $ R.modify (SProxy :: _ "postEdit")
-    $ R.modify (SProxy :: _ "request")
-    $ start
+  reduce $ modifyRequest start
   res <- fetchGet $ "/posts/" <> show postId
   case res of
     Left statusCode ->
-      reduce
-        $ R.modify (SProxy :: _ "postEdit")
-        $ R.modify (SProxy :: _ "request")
-        $ failure statusCode
+      reduce $ modifyRequest $ failure statusCode
     Right post ->
       reduce
-        $ R.modify (SProxy :: _ "postEdit")
-        $ R.modify (SProxy :: _ "request") success
-        >>> (R.set (SProxy :: _ "post") $ Just post)
+        $ modifyRequest success
+        >>> (setPost $ Just post)
+  where
+    modifyRequest =
+      R.modify (SProxy :: _ "postEdit")
+        <<< R.modify (SProxy :: _ "request")
+    setPost =
+      R.modify (SProxy :: _ "postEdit")
+        <<< R.set (SProxy :: _ "post")
 
 updatePost :: Action
 updatePost = do
@@ -41,23 +41,23 @@ updatePost = do
   case maybePost of
     Nothing -> pure unit
     Just post -> do
-      reduce
-        $ R.modify (SProxy :: _ "postEdit")
-        $ R.modify (SProxy :: _ "update")
-        $ start
+      reduce $ modifyUpdate start
       res <- fetchPut ("/posts/" <> show post.id) post
       case res of
         Left statusCode ->
-          reduce
-            $ R.modify (SProxy :: _ "postEdit")
-            $ R.modify (SProxy :: _ "update")
-            $ failure statusCode
+          reduce $ modifyUpdate $ failure statusCode
         Right post' -> do
           reduce
-            $ R.modify (SProxy :: _ "postEdit")
-            $ R.modify (SProxy :: _ "update") success
-            >>> (R.set (SProxy :: _ "post") $ Just post')
+            $ modifyUpdate success
+            >>> (setPost $ Just post')
           liftEffect $ navigateTo $ "/posts/" <> show post'.id
+  where
+    modifyUpdate =
+      R.modify (SProxy :: _ "postEdit")
+        <<< R.modify (SProxy :: _ "update")
+    setPost =
+      R.modify (SProxy :: _ "postEdit")
+        <<< R.set (SProxy :: _ "post")
 
 changeTitle :: Event -> Action
 changeTitle evt =

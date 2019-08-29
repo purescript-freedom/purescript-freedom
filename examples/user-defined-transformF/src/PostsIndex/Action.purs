@@ -16,22 +16,22 @@ import Web.Event.Event (Event, stopPropagation)
 
 fetchPosts :: Action
 fetchPosts = do
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.modify (SProxy :: _ "request")
-    $ start
+  reduce $ modifyRequest start
   res <- fetchGet "/posts"
   case res of
     Left statusCode ->
-      reduce
-        $ R.modify (SProxy :: _ "postsIndex")
-        $ R.modify (SProxy :: _ "request")
-        $ failure statusCode
+      reduce $ modifyRequest $ failure statusCode
     Right posts ->
       reduce
-        $ R.modify (SProxy :: _ "postsIndex")
-        $ R.modify (SProxy :: _ "request") success
-        >>> R.set (SProxy :: _ "posts") posts
+        $ modifyRequest success
+        >>> setPosts posts
+  where
+    modifyRequest =
+      R.modify (SProxy :: _ "postsIndex")
+        <<< R.modify (SProxy :: _ "request")
+    setPosts =
+      R.modify (SProxy :: _ "postsIndex")
+        <<< R.set (SProxy :: _ "posts")
 
 deletePost :: Action
 deletePost = do
