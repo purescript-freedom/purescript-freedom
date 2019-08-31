@@ -25,7 +25,7 @@ like this:
 
 ```purescript
 fetchCount = do
-  res <- lift $ API.get "/count"
+  res <- liftAff $ API.get "/count"
   case res of
     Right count ->
       reduce _ { count = count }
@@ -50,7 +50,7 @@ The following effect example was shown earlier.
 
 ```purescript
 fetchCount = do
-  res <- lift $ API.get "/count"
+  res <- liftAff $ API.get "/count"
   case res of
     Right count ->
       reduce _ { count = count }
