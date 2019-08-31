@@ -31,7 +31,7 @@
     "purescript-safely": "^4.0.0",
     "purescript-foreign-object": "^2.0.1",
     "purescript-aff": "^5.1.0",
-    "purescript-freet": "^4.0.0"
+    "purescript-freet": "^5.0.0"
   },
   "devDependencies": {
     "purescript-test-unit": "^15.0.0"
