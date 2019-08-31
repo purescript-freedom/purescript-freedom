@@ -3,10 +3,10 @@ module PostShow.Action where
 import Prelude
 
 import API as API
-import Control.Monad.Trans.Class (lift)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
+import Effect.Aff.Class (liftAff)
 import Entity.Request (start, success, failure)
 import Freedom.TransformF.Simple (reduce)
 import Record as R
@@ -15,7 +15,7 @@ import Type (Action)
 fetchPost :: Int -> Action
 fetchPost postId = do
   reduce $ modifyRequest start
-  res <- lift $ API.get $ "/posts/" <> show postId
+  res <- liftAff $ API.get $ "/posts/" <> show postId
   case res of
     Left statusCode ->
       reduce $ modifyRequest $ failure statusCode

@@ -3,11 +3,11 @@ module PostsIndex.Action where
 import Prelude
 
 import API as API
-import Control.Monad.Trans.Class (lift)
 import Data.Array (delete)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
+import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Entity.Post (Post)
 import Entity.Request (start, success, failure)
@@ -19,7 +19,7 @@ import Web.Event.Event (Event, stopPropagation)
 fetchPosts :: Action
 fetchPosts = do
   reduce $ modifyRequest start
-  res <- lift $ API.get "/posts"
+  res <- liftAff $ API.get "/posts"
   case res of
     Left statusCode ->
       reduce $ modifyRequest $ failure statusCode
@@ -45,7 +45,7 @@ deletePost = do
         $ R.modify (SProxy :: _ "postsIndex")
         $ R.modify (SProxy :: _ "posts") (delete post')
         >>> R.set (SProxy :: _ "deleteTargetPost") Nothing
-      lift $ void $ API.delete_ $ "/posts/" <> show post'.id
+      liftAff $ void $ API.delete_ $ "/posts/" <> show post'.id
 
 openDeleteDialog :: Post -> Action
 openDeleteDialog post =

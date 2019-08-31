@@ -3,10 +3,10 @@ module PostEdit.Action where
 import Prelude
 
 import API as API
-import Control.Monad.Trans.Class (lift)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
+import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Entity.Post (updateTitle, updateBody)
 import Entity.Request (start, success, failure)
@@ -21,7 +21,7 @@ import Web.HTML.HTMLTextAreaElement as TextArea
 fetchPost :: Int -> Action
 fetchPost postId = do
   reduce $ modifyRequest start
-  res <- lift $ API.get $ "/posts/" <> show postId
+  res <- liftAff $ API.get $ "/posts/" <> show postId
   case res of
     Left statusCode ->
       reduce $ modifyRequest $ failure statusCode
@@ -66,7 +66,7 @@ updatePost = do
     Nothing -> pure unit
     Just post -> do
       reduce $ modifyUpdate start
-      res <- lift $ API.put ("/posts/" <> show post.id) post
+      res <- liftAff $ API.put ("/posts/" <> show post.id) post
       case res of
         Left statusCode ->
           reduce $ modifyUpdate $ failure statusCode
