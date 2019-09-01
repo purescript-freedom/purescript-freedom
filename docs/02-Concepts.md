@@ -33,7 +33,7 @@ fetchCount = do
       reduce _ { failure = true }
 ```
 
-See [examples](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/View/PostEdit.purs) for the actual code.
+See [examples](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/PostEdit/Action.purs) for the actual code.
 
 `purescript-freedom` relieves some pains, but it have new pain.
 
@@ -134,7 +134,7 @@ Many libraries of "CSS in JS" let people write styles in JavaScript, and such li
 
 It evaluates styles gradually as each node is rendered because styles evaluation is incorporated in rendering process.
 
-See an [example](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/View/PostsIndex.purs#L68-L79).
+See an [example](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/PostsIndex/View.purs#L57-L68).
 
 As you can see, write styles with css string, and manage styles close to a view.
 

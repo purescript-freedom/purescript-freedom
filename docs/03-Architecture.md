@@ -177,8 +177,8 @@ Please keep this in the back of your head.
 
 Here is examples.
 
-- [`Action` example using default transformF](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/View/PostsIndex.purs#L141-L158)
-- [`Action` example using user defined transformF](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/user-defined-transformF/src/Action/PostsIndex.purs#L15-L32)
+- [`Action` example using default transformF](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/basic/src/PostsIndex/Action.purs#L19-L36)
+- [`Action` example using user defined transformF](https://github.com/purescript-freedom/purescript-freedom/blob/master/examples/user-defined-transformF/src/PostsIndex/Action.purs#L17-L34)
 
 ## Subscription
 
@@ -675,6 +675,7 @@ Please use them if you want.
 - [purescript-freedom-transition](https://github.com/purescript-freedom/purescript-freedom-transition)
 - [purescript-freedom-virtualized](https://github.com/purescript-freedom/purescript-freedom-virtualized)
 - [purescript-freedom-window-resize](https://github.com/purescript-freedom/purescript-freedom-window-resize)
+- [purescript-freedom-now](https://github.com/purescript-freedom/purescript-freedom-now)
 
 ## Related packages
 
