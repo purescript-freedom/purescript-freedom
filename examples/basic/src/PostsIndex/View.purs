@@ -4,6 +4,7 @@ module PostsIndex.View
 
 import Prelude
 
+import Common.Request.View as Request
 import Data.Maybe (Maybe(..))
 import Entity.Post (Post)
 import Freedom.Markup as H
@@ -12,7 +13,6 @@ import Freedom.Router (link)
 import PostsIndex.Action (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog, blockEvent)
 import PostsIndex.State (State)
 import Type (Html)
-import View.Request as Request
 
 view :: State -> Html
 view { request, posts, deleteTargetPost } =

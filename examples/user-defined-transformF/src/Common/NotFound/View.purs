@@ -1,4 +1,4 @@
-module View.NotFound
+module Common.NotFound.View
   ( view
   ) where
 

@@ -1,4 +1,4 @@
-module View.Request
+module Common.Request.View
   ( view
   ) where
 

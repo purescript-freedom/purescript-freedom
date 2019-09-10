@@ -4,6 +4,7 @@ module View
 
 import Prelude
 
+import Common.NotFound.View as NotFound
 import Freedom.Markup as H
 import Freedom.Router (link)
 import PostsIndex.View as PostsIndex
@@ -12,7 +13,6 @@ import PostEdit.View as PostEdit
 import State (State)
 import State.Route (Route(..))
 import Type (Html)
-import View.NotFound as NotFound
 
 view :: State -> Html
 view state =

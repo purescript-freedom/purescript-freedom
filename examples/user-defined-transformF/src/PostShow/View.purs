@@ -4,14 +4,14 @@ module PostShow.View
 
 import Prelude
 
+import Common.NotFound.View as NotFound
+import Common.Request.View as Request
 import Data.Maybe (Maybe(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
 import PostShow.Action (fetchPost)
 import PostShow.State (State)
 import Type (Html)
-import View.NotFound as NotFound
-import View.Request as Request
 
 view :: Int -> State -> Html
 view postId { request, post } =
