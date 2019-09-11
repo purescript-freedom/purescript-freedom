@@ -35,9 +35,9 @@ view postId { request, update, post } =
                   # H.value post'.title
               ]
           , H.el $ H.textarea
+              # H.value post'.body
               # H.onChange changeBody
               # H.css cssTextarea
-              # H.kids [ H.t post'.body ]
           , H.el $ H.div
               # H.css cssBottom
               # H.kids
