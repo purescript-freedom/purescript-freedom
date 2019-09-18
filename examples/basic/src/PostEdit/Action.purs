@@ -39,8 +39,8 @@ fetchPost postId = do
 
 changeTitle :: Event -> Action
 changeTitle evt =
-  case Input.fromEventTarget <$> target evt of
-    Just (Just el) -> do
+  case target evt >>= Input.fromEventTarget of
+    Just el -> do
       title <- liftEffect $ Input.value el
       reduce
         $ R.modify (SProxy :: _ "postEdit")
@@ -50,8 +50,8 @@ changeTitle evt =
 
 changeBody :: Event -> Action
 changeBody evt =
-  case TextArea.fromEventTarget <$> target evt of
-    Just (Just el) -> do
+  case target evt >>= TextArea.fromEventTarget of
+    Just el -> do
       body <- liftEffect $ TextArea.value el
       reduce
         $ R.modify (SProxy :: _ "postEdit")
