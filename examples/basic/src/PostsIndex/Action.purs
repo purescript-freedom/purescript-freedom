@@ -49,15 +49,11 @@ deletePost = do
 
 openDeleteDialog :: Post -> Action
 openDeleteDialog post =
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.set (SProxy :: _ "deleteTargetPost") $ Just post
+  reduce _ { postsIndex { deleteTargetPost = Just post } }
 
 closeDeleteDialog :: Action
 closeDeleteDialog =
-  reduce
-    $ R.modify (SProxy :: _ "postsIndex")
-    $ R.set (SProxy :: _ "deleteTargetPost") Nothing
+  reduce _ { postsIndex { deleteTargetPost = Nothing } }
 
 blockEvent :: Event -> Action
 blockEvent = liftEffect <<< stopPropagation
