@@ -14,7 +14,7 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Console (error)
-import Effect.Ref (Ref, modify, new, read)
+import Effect.Ref (Ref, modify, new, read, write)
 import Freedom.Renderer.Diff (diff)
 import Freedom.Renderer.Util (class Affable, class IsRenderEnv)
 import Freedom.Renderer.Util as Util
@@ -28,11 +28,12 @@ import Web.DOM.ParentNode (QuerySelector(..), querySelector)
 import Web.DOM.Text as T
 import Web.HTML (window)
 import Web.HTML.HTMLDocument (toParentNode)
-import Web.HTML.Window (document)
+import Web.HTML.Window (document, requestAnimationFrame)
 
 newtype Renderer f state = Renderer
   { container :: Maybe Node
   , view :: state -> VNode f state
+  , renderFlagRef :: Ref Boolean
   , historyRef :: Ref (Array (VNode f state))
   , transformF :: TransformF f state
   , getState :: Effect state
@@ -50,8 +51,17 @@ createRenderer
 createRenderer selector view transformF getState styler = do
   parentNode <- toParentNode <$> (window >>= document)
   container <- map E.toNode <$> querySelector (QuerySelector selector) parentNode
+  renderFlagRef <- new false
   historyRef <- new []
-  pure $ Renderer { container, view, historyRef, transformF, getState, styler }
+  pure $ Renderer
+    { container
+    , view
+    , renderFlagRef
+    , historyRef
+    , transformF
+    , getState
+    , styler
+    }
 
 render
   :: forall f state
@@ -62,15 +72,20 @@ render (Renderer r@{ transformF, getState, styler }) =
   case r.container of
     Nothing -> error "Received selector is not found."
     Just node -> do
-      state <- getState
-      history <- flip modify r.historyRef \h -> take 2 $ r.view state : h
-      flip runReaderT (RenderEnv { transformF, styler, isSVG: false }) $ patch
-        { current: history !! 1
-        , next: history !! 0
-        , realParentNode: node
-        , realNodeIndex: 0
-        , moveIndex: Nothing
-        }
+      renderFlag <- read r.renderFlagRef
+      when (not renderFlag) do
+        write true r.renderFlagRef
+        void $ window >>= requestAnimationFrame do
+          write false r.renderFlagRef
+          state <- getState
+          history <- flip modify r.historyRef \h -> take 2 $ r.view state : h
+          flip runReaderT (RenderEnv { transformF, styler, isSVG: false }) $ patch
+            { current: history !! 1
+            , next: history !! 0
+            , realParentNode: node
+            , realNodeIndex: 0
+            , moveIndex: Nothing
+            }
 
 newtype RenderEnv f state = RenderEnv
   { styler :: Styler
