@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Monad.Free.Trans (FreeT)
 import Control.Monad.Rec.Class (class MonadRec)
-import Freedom.Markup.Common (on)
+import Freedom.Markup.Common (handle)
 import Freedom.VNode (VObject)
 import Web.Event.Event (Event)
 
@@ -15,7 +15,7 @@ onAbort
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onAbort = on "onabort"
+onAbort = handle "onabort"
 
 onBlur
   :: forall f state m
@@ -24,7 +24,7 @@ onBlur
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onBlur = on "onblur"
+onBlur = handle "onblur"
 
 onCancel
   :: forall f state m
@@ -33,7 +33,7 @@ onCancel
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onCancel = on "oncancel"
+onCancel = handle "oncancel"
 
 onCanPlay
   :: forall f state m
@@ -42,7 +42,7 @@ onCanPlay
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onCanPlay = on "oncanplay"
+onCanPlay = handle "oncanplay"
 
 onCanPlayThrough
   :: forall f state m
@@ -51,7 +51,7 @@ onCanPlayThrough
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onCanPlayThrough = on "oncanplaythrough"
+onCanPlayThrough = handle "oncanplaythrough"
 
 onChange
   :: forall f state m
@@ -60,7 +60,7 @@ onChange
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onChange = on "onchange"
+onChange = handle "onchange"
 
 onClick
   :: forall f state m
@@ -69,7 +69,7 @@ onClick
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onClick = on "onclick"
+onClick = handle "onclick"
 
 onContextMenu
   :: forall f state m
@@ -78,7 +78,7 @@ onContextMenu
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onContextMenu = on "oncontextmenu"
+onContextMenu = handle "oncontextmenu"
 
 onCueChange
   :: forall f state m
@@ -87,7 +87,7 @@ onCueChange
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onCueChange = on "oncuechange"
+onCueChange = handle "oncuechange"
 
 onDoubleClick
   :: forall f state m
@@ -96,7 +96,7 @@ onDoubleClick
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDoubleClick = on "ondblclick"
+onDoubleClick = handle "ondblclick"
 
 onDrag
   :: forall f state m
@@ -105,7 +105,7 @@ onDrag
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDrag = on "ondrag"
+onDrag = handle "ondrag"
 
 onDragEnd
   :: forall f state m
@@ -114,7 +114,7 @@ onDragEnd
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDragEnd = on "ondragend"
+onDragEnd = handle "ondragend"
 
 onDragEnter
   :: forall f state m
@@ -123,7 +123,7 @@ onDragEnter
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDragEnter = on "ondragenter"
+onDragEnter = handle "ondragenter"
 
 onDragLeave
   :: forall f state m
@@ -132,7 +132,7 @@ onDragLeave
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDragLeave = on "ondragleave"
+onDragLeave = handle "ondragleave"
 
 onDragOver
   :: forall f state m
@@ -141,7 +141,7 @@ onDragOver
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDragOver = on "ondragover"
+onDragOver = handle "ondragover"
 
 onDragStart
   :: forall f state m
@@ -150,7 +150,7 @@ onDragStart
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDragStart = on "ondragstart"
+onDragStart = handle "ondragstart"
 
 onDrop
   :: forall f state m
@@ -159,7 +159,7 @@ onDrop
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDrop = on "ondrop"
+onDrop = handle "ondrop"
 
 onDurationChange
   :: forall f state m
@@ -168,7 +168,7 @@ onDurationChange
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onDurationChange = on "ondurationchange"
+onDurationChange = handle "ondurationchange"
 
 onEmptied
   :: forall f state m
@@ -177,7 +177,7 @@ onEmptied
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onEmptied = on "onemptied"
+onEmptied = handle "onemptied"
 
 onEnded
   :: forall f state m
@@ -186,7 +186,7 @@ onEnded
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onEnded = on "onended"
+onEnded = handle "onended"
 
 onError
   :: forall f state m
@@ -195,7 +195,7 @@ onError
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onError = on "onerror"
+onError = handle "onerror"
 
 onFocus
   :: forall f state m
@@ -204,7 +204,7 @@ onFocus
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onFocus = on "onfocus"
+onFocus = handle "onfocus"
 
 onInput
   :: forall f state m
@@ -213,7 +213,7 @@ onInput
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onInput = on "oninput"
+onInput = handle "oninput"
 
 onInvalid
   :: forall f state m
@@ -222,7 +222,7 @@ onInvalid
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onInvalid = on "oninvalid"
+onInvalid = handle "oninvalid"
 
 onKeyDown
   :: forall f state m
@@ -231,7 +231,7 @@ onKeyDown
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onKeyDown = on "onkeydown"
+onKeyDown = handle "onkeydown"
 
 onKeyPress
   :: forall f state m
@@ -240,7 +240,7 @@ onKeyPress
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onKeyPress = on "onkeypress"
+onKeyPress = handle "onkeypress"
 
 onKeyUp
   :: forall f state m
@@ -249,7 +249,7 @@ onKeyUp
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onKeyUp = on "onkeyup"
+onKeyUp = handle "onkeyup"
 
 onLoad
   :: forall f state m
@@ -258,7 +258,7 @@ onLoad
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onLoad = on "onload"
+onLoad = handle "onload"
 
 onLoadedData
   :: forall f state m
@@ -267,7 +267,7 @@ onLoadedData
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onLoadedData = on "onloadeddata"
+onLoadedData = handle "onloadeddata"
 
 onLoadedMetadata
   :: forall f state m
@@ -276,7 +276,7 @@ onLoadedMetadata
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onLoadedMetadata = on "onloadedmetadata"
+onLoadedMetadata = handle "onloadedmetadata"
 
 onLoadStart
   :: forall f state m
@@ -285,7 +285,7 @@ onLoadStart
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onLoadStart = on "onloadstart"
+onLoadStart = handle "onloadstart"
 
 onMouseDown
   :: forall f state m
@@ -294,7 +294,7 @@ onMouseDown
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseDown = on "onmousedown"
+onMouseDown = handle "onmousedown"
 
 onMouseEnter
   :: forall f state m
@@ -303,7 +303,7 @@ onMouseEnter
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseEnter = on "onmouseenter"
+onMouseEnter = handle "onmouseenter"
 
 onMouseLeave
   :: forall f state m
@@ -312,7 +312,7 @@ onMouseLeave
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseLeave = on "onmouseleave"
+onMouseLeave = handle "onmouseleave"
 
 onMouseMove
   :: forall f state m
@@ -321,7 +321,7 @@ onMouseMove
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseMove = on "onmousemove"
+onMouseMove = handle "onmousemove"
 
 onMouseOut
   :: forall f state m
@@ -330,7 +330,7 @@ onMouseOut
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseOut = on "onmouseout"
+onMouseOut = handle "onmouseout"
 
 onMouseOver
   :: forall f state m
@@ -339,7 +339,7 @@ onMouseOver
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseOver = on "onmouseover"
+onMouseOver = handle "onmouseover"
 
 onMouseUp
   :: forall f state m
@@ -348,7 +348,7 @@ onMouseUp
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onMouseUp = on "onmouseup"
+onMouseUp = handle "onmouseup"
 
 onPause
   :: forall f state m
@@ -357,7 +357,7 @@ onPause
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPause = on "onpause"
+onPause = handle "onpause"
 
 onPlay
   :: forall f state m
@@ -366,7 +366,7 @@ onPlay
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPlay = on "onplay"
+onPlay = handle "onplay"
 
 onPlaying
   :: forall f state m
@@ -375,7 +375,7 @@ onPlaying
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPlaying = on "onplaying"
+onPlaying = handle "onplaying"
 
 onProgress
   :: forall f state m
@@ -384,7 +384,7 @@ onProgress
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onProgress = on "onprogress"
+onProgress = handle "onprogress"
 
 onRateChange
   :: forall f state m
@@ -393,7 +393,7 @@ onRateChange
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onRateChange = on "onratechange"
+onRateChange = handle "onratechange"
 
 onReset
   :: forall f state m
@@ -402,7 +402,7 @@ onReset
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onReset = on "onreset"
+onReset = handle "onreset"
 
 onScroll
   :: forall f state m
@@ -411,7 +411,7 @@ onScroll
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onScroll = on "onscroll"
+onScroll = handle "onscroll"
 
 onSeeked
   :: forall f state m
@@ -420,7 +420,7 @@ onSeeked
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onSeeked = on "onseeked"
+onSeeked = handle "onseeked"
 
 onSeeking
   :: forall f state m
@@ -429,7 +429,7 @@ onSeeking
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onSeeking = on "onseeking"
+onSeeking = handle "onseeking"
 
 onSelect
   :: forall f state m
@@ -438,7 +438,7 @@ onSelect
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onSelect = on "onselect"
+onSelect = handle "onselect"
 
 onStalled
   :: forall f state m
@@ -447,7 +447,7 @@ onStalled
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onStalled = on "onstalled"
+onStalled = handle "onstalled"
 
 onSubmit
   :: forall f state m
@@ -456,7 +456,7 @@ onSubmit
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onSubmit = on "onsubmit"
+onSubmit = handle "onsubmit"
 
 onSuspend
   :: forall f state m
@@ -465,7 +465,7 @@ onSuspend
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onSuspend = on "onsuspend"
+onSuspend = handle "onsuspend"
 
 onTimeUpdate
   :: forall f state m
@@ -474,7 +474,7 @@ onTimeUpdate
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onTimeUpdate = on "ontimeupdate"
+onTimeUpdate = handle "ontimeupdate"
 
 onToggle
   :: forall f state m
@@ -483,7 +483,7 @@ onToggle
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onToggle = on "ontoggle"
+onToggle = handle "ontoggle"
 
 onVolumeChange
   :: forall f state m
@@ -492,7 +492,7 @@ onVolumeChange
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onVolumeChange = on "onvolumechange"
+onVolumeChange = handle "onvolumechange"
 
 onWaiting
   :: forall f state m
@@ -501,7 +501,7 @@ onWaiting
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onWaiting = on "onwaiting"
+onWaiting = handle "onwaiting"
 
 onWheel
   :: forall f state m
@@ -510,7 +510,7 @@ onWheel
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onWheel = on "onwheel"
+onWheel = handle "onwheel"
 
 onPointerDown
   :: forall f state m
@@ -519,7 +519,7 @@ onPointerDown
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerDown = on "onpointerdown"
+onPointerDown = handle "onpointerdown"
 
 onPointerMove
   :: forall f state m
@@ -528,7 +528,7 @@ onPointerMove
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerMove = on "onpointermove"
+onPointerMove = handle "onpointermove"
 
 onPointerUp
   :: forall f state m
@@ -537,7 +537,7 @@ onPointerUp
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerUp = on "onpointerup"
+onPointerUp = handle "onpointerup"
 
 onPointerCancel
   :: forall f state m
@@ -546,7 +546,7 @@ onPointerCancel
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerCancel = on "onpointercancel"
+onPointerCancel = handle "onpointercancel"
 
 onPointerOver
   :: forall f state m
@@ -555,7 +555,7 @@ onPointerOver
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerOver = on "onpointerover"
+onPointerOver = handle "onpointerover"
 
 onPointerOut
   :: forall f state m
@@ -564,7 +564,7 @@ onPointerOut
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerOut = on "onpointerout"
+onPointerOut = handle "onpointerout"
 
 onPointerEnter
   :: forall f state m
@@ -573,7 +573,7 @@ onPointerEnter
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerEnter = on "onpointerenter"
+onPointerEnter = handle "onpointerenter"
 
 onPointerLeave
   :: forall f state m
@@ -582,4 +582,4 @@ onPointerLeave
   => (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-onPointerLeave = on "onpointerleave"
+onPointerLeave = handle "onpointerleave"

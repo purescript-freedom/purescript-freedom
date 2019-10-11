@@ -6,7 +6,7 @@ module Freedom.Markup.Common
   , tag
   , kids
   , prop
-  , on
+  , handle
   , didCreate
   , didUpdate
   , didDelete
@@ -86,7 +86,7 @@ prop name val obj =
   obj { props = insert name val obj.props }
 
 -- | Bind an event handler to `VObject`
-on
+handle
   :: forall f state m
    . Functor (f state)
   => MonadRec m
@@ -94,7 +94,7 @@ on
   -> (Event -> FreeT (f state) m Unit)
   -> VObject f state m
   -> VObject f state m
-on name h obj =
+handle name h obj =
   obj { handlers = insert name h obj.handlers }
 
 -- | Bind `didCreate` lifecycle to `VObject`
