@@ -657,7 +657,7 @@ Even if so, there are helpers for such a case in `Freedom.Markup`.
   - For tags
 - `prop`
   - For properties
-- `on`
+- `handle`
   - For event handlers
 
 Please use them if you want.
