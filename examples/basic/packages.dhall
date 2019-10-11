@@ -116,7 +116,7 @@ let upstream =
 
 let overrides =
   { freedom =
-      upstream.freedom // { version = "v1.3.0" }
+      upstream.freedom // { version = "v1.4.0" }
   }
 
 let additions = {=}
