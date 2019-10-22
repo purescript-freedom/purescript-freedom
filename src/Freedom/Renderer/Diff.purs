@@ -1,7 +1,6 @@
 module Freedom.Renderer.Diff
   ( class HasKey
-  , key
-  , fallbackPrefix
+  , getKey
   , diff
   ) where
 
@@ -17,18 +16,22 @@ import Freedom.VNode (VElement(..), VNode(..))
 import Partial.Unsafe (unsafePartial)
 
 class HasKey a where
-  key :: a -> String
-  fallbackPrefix :: a -> String
+  getKey :: Int -> a -> String
 
 instance hasKeyInt :: HasKey Int where
-  key = show
-  fallbackPrefix = show
+  getKey _ = show
 
 instance hasKeyVNode :: HasKey (VNode f state) where
-  key (VNode k _) = k
-  fallbackPrefix (VNode _ (Text _)) = "text_"
-  fallbackPrefix (VNode _ (Element { tag })) = "element_" <> tag <> "_"
-  fallbackPrefix (VNode _ (OperativeElement _ { tag })) = "oelement_" <> tag <> "_"
+  getKey idx (VNode k velement) =
+    let prefix =
+          case velement of
+            Text _ ->
+              "text_"
+            Element { tag } ->
+              "element_" <> tag <> "_"
+            OperativeElement _ { tag } ->
+              "oelement_" <> tag <> "_"
+     in prefix <> if k == "" then show idx else k
 
 type PatchArgs parent child =
   { current :: Maybe child
@@ -121,11 +124,6 @@ storeKeyToIdx x = x { keyToIndex = _ }
 
 markProcessKey :: forall a. String -> DiffState a -> DiffState a
 markProcessKey k x = x { keyToIndex = _ } $ O.delete k x.keyToIndex
-
-getKey :: forall a. HasKey a => Int -> a -> String
-getKey idx a = if key a == "" then fkey else key a
-  where
-    fkey = fallbackPrefix a <> show idx
 
 diff
   :: forall parent child m

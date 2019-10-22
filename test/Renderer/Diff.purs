@@ -8,23 +8,32 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Ref (Ref, new, read, write)
-import Freedom.Renderer.Diff (diff)
+import Freedom.Markup as H
+import Freedom.Renderer.Diff (diff, getKey)
+import Test.Type (Html)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
 
 testDiff :: TestSuite
-testDiff = suite "takeDiff" do
-  Safe.for_ targetLists \targetList ->
-    test (show startingList <> " -> " <> show targetList) do
-      ref <- liftEffect $ new startingList
-      liftEffect $ diff patch ref startingList targetList
+testDiff = suite "Diff" do
+  test "getKey" do
+     Assert.equal "text_0" $ getKey 0 $ H.t "test text"
+     Assert.equal "element_span_1" $ getKey 1 $ (H.el $ H.span :: Html)
+     Assert.equal "oelement_div_2" $ getKey 2 $ (H.op $ H.div :: Html)
+     Assert.equal "element_span_key1" $ getKey 1 $ (H.keyed "key1" $ H.el $ H.span :: Html)
+     Assert.equal "oelement_div_key2" $ getKey 2 $ (H.keyed "key2" $ H.op $ H.div :: Html)
+  suite "diff" do
+    Safe.for_ targetLists \targetList ->
+      test (show startingList <> " -> " <> show targetList) do
+        ref <- liftEffect $ new startingList
+        liftEffect $ diff patch ref startingList targetList
+        sourceList <- liftEffect $ read ref
+        Assert.equal targetList sourceList
+    test ("[] -> " <> show startingList) do
+      ref <- liftEffect $ new []
+      liftEffect $ diff patch ref [] startingList
       sourceList <- liftEffect $ read ref
-      Assert.equal targetList sourceList
-  test ("[] -> " <> show startingList) do
-    ref <- liftEffect $ new []
-    liftEffect $ diff patch ref [] startingList
-    sourceList <- liftEffect $ read ref
-    Assert.equal startingList sourceList
+      Assert.equal startingList sourceList
 
 startingList :: Array Int
 startingList = [ 0, 1, 2, 3, 4, 5 ]
