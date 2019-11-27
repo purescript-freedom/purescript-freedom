@@ -12,6 +12,7 @@ import Effect.Class (liftEffect)
 import Entity.Post (Post)
 import Entity.Request (start, success, failure)
 import Freedom.TransformF.Simple (select, reduce)
+import PostsIndex.State (initialState)
 import Record as R
 import Type (Action)
 import Web.Event.Event (Event, stopPropagation)
@@ -57,3 +58,7 @@ closeDeleteDialog =
 
 blockEvent :: Event -> Action
 blockEvent = liftEffect <<< stopPropagation
+
+resetState :: Action
+resetState =
+  reduce _ { postsIndex = initialState }

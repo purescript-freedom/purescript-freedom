@@ -9,6 +9,7 @@ import Data.Symbol (SProxy(..))
 import Effect.Aff.Class (liftAff)
 import Entity.Request (start, success, failure)
 import Freedom.TransformF.Simple (reduce)
+import PostShow.State (initialState)
 import Record as R
 import Type (Action)
 
@@ -30,3 +31,7 @@ fetchPost postId = do
     setPost =
       R.modify (SProxy :: _ "postShow")
         <<< R.set (SProxy :: _ "post")
+
+resetState :: Action
+resetState =
+  reduce _ { postShow = initialState }

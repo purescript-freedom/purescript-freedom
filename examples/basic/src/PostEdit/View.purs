@@ -10,7 +10,7 @@ import Data.Maybe (Maybe(..))
 import Entity.Request (Request(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
-import PostEdit.Action (fetchPost, changeTitle, changeBody, updatePost)
+import PostEdit.Action (fetchPost, changeTitle, changeBody, updatePost, resetState)
 import PostEdit.State (State)
 import Type (Html)
 
@@ -20,7 +20,7 @@ view postId { request, update, post } =
     case post of
       Nothing -> NotFound.view
       Just post' ->
-        H.el $ H.div # H.kids
+        H.el $ H.div # H.didDelete (const resetState) # H.kids
           [ case update of
               Failure _ ->
                 H.el $ H.p

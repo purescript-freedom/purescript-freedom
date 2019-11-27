@@ -12,6 +12,7 @@ import Entity.Post (updateTitle, updateBody)
 import Entity.Request (start, success, failure)
 import Freedom.Router (navigateTo)
 import Freedom.TransformF.Simple (select, reduce)
+import PostEdit.State (initialState)
 import Record as R
 import Type (Action)
 import Web.Event.Event (Event, target)
@@ -82,3 +83,7 @@ updatePost = do
     setPost =
       R.modify (SProxy :: _ "postEdit")
         <<< R.set (SProxy :: _ "post")
+
+resetState :: Action
+resetState =
+  reduce _ { postEdit = initialState }
