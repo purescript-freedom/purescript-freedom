@@ -6,6 +6,7 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Symbol (SProxy(..))
 import Entity.Request (start, success, failure)
+import PostShow.State (initialState)
 import Record as R
 import TransformF (reduce, fetchGet)
 import Type (Action)
@@ -28,3 +29,7 @@ fetchPost postId = do
     setPost =
       R.modify (SProxy :: _ "postShow")
         <<< R.set (SProxy :: _ "post")
+
+resetState :: Action
+resetState =
+  reduce _ { postShow = initialState }

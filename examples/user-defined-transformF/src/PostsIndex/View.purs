@@ -10,14 +10,14 @@ import Entity.Post (Post)
 import Freedom.Markup as H
 import Freedom.Portal (portal)
 import Freedom.Router (link)
-import PostsIndex.Action (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog, blockEvent)
+import PostsIndex.Action (fetchPosts, deletePost, openDeleteDialog, closeDeleteDialog, blockEvent, resetState)
 import PostsIndex.State (State)
 import Type (Html)
 
 view :: State -> Html
 view { request, posts, deleteTargetPost } =
   Request.view request fetchPosts
-    $ H.el $ H.div # H.kids
+    $ H.el $ H.div # H.didDelete (const resetState) # H.kids
         [ H.el $ H.h2 # H.kids [ H.t "Latest Posts" ]
         , H.el $ H.ul # H.css cssUl # H.kids (postItem <$> posts)
         , deleteDialog deleteTargetPost

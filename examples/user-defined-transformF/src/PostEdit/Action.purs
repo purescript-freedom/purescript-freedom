@@ -9,6 +9,7 @@ import Effect.Class (liftEffect)
 import Entity.Post (updateTitle, updateBody)
 import Entity.Request (start, success, failure)
 import Freedom.Router (navigateTo)
+import PostEdit.State (initialState)
 import Record as R
 import TransformF (select, reduce, fetchGet, fetchPut)
 import Type (Action)
@@ -80,3 +81,7 @@ changeBody evt =
         $ R.modify (SProxy :: _ "post")
         $ map (updateBody body)
     _ -> pure unit
+
+resetState :: Action
+resetState =
+  reduce _ { postEdit = initialState }

@@ -9,7 +9,7 @@ import Common.Request.View as Request
 import Data.Maybe (Maybe(..))
 import Freedom.Markup as H
 import Freedom.Router (link)
-import PostShow.Action (fetchPost)
+import PostShow.Action (fetchPost, resetState)
 import PostShow.State (State)
 import Type (Html)
 
@@ -19,7 +19,7 @@ view postId { request, post } =
     case post of
       Nothing -> NotFound.view
       Just post' ->
-        H.el $ H.div # H.kids
+        H.el $ H.div # H.didDelete (const resetState) # H.kids
           [ H.el $ H.h2 # H.kids [ H.t post'.title ]
           , H.el $ H.pre # H.css cssPre # H.kids [ H.t post'.body ]
           , H.el $ H.div # H.css cssBottom

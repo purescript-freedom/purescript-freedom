@@ -20,10 +20,3 @@ initialState =
   , postShow: PostShow.initialState
   , postEdit: PostEdit.initialState
   }
-
-resetUIState :: State -> State
-resetUIState = _
-  { postsIndex = PostsIndex.initialState
-  , postShow = PostShow.initialState
-  , postEdit = PostEdit.initialState
-  }
