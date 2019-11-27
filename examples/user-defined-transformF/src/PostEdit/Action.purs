@@ -17,7 +17,7 @@ import Web.Event.Event (Event, target)
 import Web.HTML.HTMLInputElement as Input
 import Web.HTML.HTMLTextAreaElement as TextArea
 
-fetchPost :: Int -> Action
+fetchPost :: Int -> Action Unit
 fetchPost postId = do
   reduce $ modifyRequest start
   res <- fetchGet $ "/posts/" <> show postId
@@ -36,7 +36,7 @@ fetchPost postId = do
       R.modify (SProxy :: _ "postEdit")
         <<< R.set (SProxy :: _ "post")
 
-updatePost :: Action
+updatePost :: Action Unit
 updatePost = do
   maybePost <- select <#> _.postEdit.post
   case maybePost of
@@ -60,7 +60,7 @@ updatePost = do
       R.modify (SProxy :: _ "postEdit")
         <<< R.set (SProxy :: _ "post")
 
-changeTitle :: Event -> Action
+changeTitle :: Event -> Action Unit
 changeTitle evt =
   case target evt >>= Input.fromEventTarget of
     Just el -> do
@@ -71,7 +71,7 @@ changeTitle evt =
         $ map (updateTitle title)
     _ -> pure unit
 
-changeBody :: Event -> Action
+changeBody :: Event -> Action Unit
 changeBody evt =
   case target evt >>= TextArea.fromEventTarget of
     Just el -> do
@@ -82,6 +82,6 @@ changeBody evt =
         $ map (updateBody body)
     _ -> pure unit
 
-resetState :: Action
+resetState :: Action Unit
 resetState =
   reduce _ { postEdit = initialState }

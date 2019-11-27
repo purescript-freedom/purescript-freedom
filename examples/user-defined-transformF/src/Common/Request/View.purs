@@ -8,7 +8,7 @@ import Entity.Request (Request(..))
 import Freedom.Markup as H
 import Type (Html, Action)
 
-view :: Request -> Action -> Html -> Html
+view :: Request -> Action Unit -> Html -> Html
 view request action html =
   H.el $ H.div
     # H.didCreate (const action)

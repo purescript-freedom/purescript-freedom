@@ -11,7 +11,7 @@ import Record as R
 import TransformF (reduce, fetchGet)
 import Type (Action)
 
-fetchPost :: Int -> Action
+fetchPost :: Int -> Action Unit
 fetchPost postId = do
   reduce $ modifyRequest start
   res <- fetchGet $ "/posts/" <> show postId
@@ -30,6 +30,6 @@ fetchPost postId = do
       R.modify (SProxy :: _ "postShow")
         <<< R.set (SProxy :: _ "post")
 
-resetState :: Action
+resetState :: Action Unit
 resetState =
   reduce _ { postShow = initialState }

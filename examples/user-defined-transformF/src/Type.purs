@@ -1,7 +1,5 @@
 module Type where
 
-import Prelude
-
 import Effect.Aff (Aff)
 import Freedom.Subscription (Subscription)
 import Freedom.VNode (VNode)
@@ -14,4 +12,4 @@ type Html = VNode VQueryF State
 
 type Sub = Subscription VQueryF State
 
-type Action = VQuery State Aff Unit
+type Action = VQuery State Aff

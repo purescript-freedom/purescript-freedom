@@ -17,7 +17,7 @@ import Record as R
 import Type (Action)
 import Web.Event.Event (Event, stopPropagation)
 
-fetchPosts :: Action
+fetchPosts :: Action Unit
 fetchPosts = do
   reduce $ modifyRequest start
   res <- liftAff $ API.get "/posts"
@@ -36,7 +36,7 @@ fetchPosts = do
       R.modify (SProxy :: _ "postsIndex")
         <<< R.set (SProxy :: _ "posts")
 
-deletePost :: Action
+deletePost :: Action Unit
 deletePost = do
   post <- select <#> _.postsIndex.deleteTargetPost
   case post of
@@ -48,17 +48,17 @@ deletePost = do
         >>> R.set (SProxy :: _ "deleteTargetPost") Nothing
       liftAff $ void $ API.delete_ $ "/posts/" <> show post'.id
 
-openDeleteDialog :: Post -> Action
+openDeleteDialog :: Post -> Action Unit
 openDeleteDialog post =
   reduce _ { postsIndex { deleteTargetPost = Just post } }
 
-closeDeleteDialog :: Action
+closeDeleteDialog :: Action Unit
 closeDeleteDialog =
   reduce _ { postsIndex { deleteTargetPost = Nothing } }
 
-blockEvent :: Event -> Action
+blockEvent :: Event -> Action Unit
 blockEvent = liftEffect <<< stopPropagation
 
-resetState :: Action
+resetState :: Action Unit
 resetState =
   reduce _ { postsIndex = initialState }
