@@ -29,9 +29,7 @@
     "purescript-simple-emitter": "^1.0.0",
     "purescript-console": "^4.2.0",
     "purescript-safely": "^4.0.0",
-    "purescript-foreign-object": "^2.0.1",
-    "purescript-aff": "^5.1.0",
-    "purescript-freet": "^5.0.0"
+    "purescript-foreign-object": "^2.0.1"
   },
   "devDependencies": {
     "purescript-test-unit": "^15.0.0"
