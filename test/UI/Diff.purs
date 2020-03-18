@@ -1,4 +1,4 @@
-module Test.Renderer.Diff where
+module Test.UI.Diff where
 
 import Prelude
 
@@ -9,7 +9,8 @@ import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Ref (Ref, new, read, write)
 import Freedom.Markup as H
-import Freedom.Renderer.Diff (diff, getKey)
+import Freedom.UI.Class (getKey)
+import Freedom.UI.Diff (diff)
 import Test.Type (Html)
 import Test.Unit (TestSuite, suite, test)
 import Test.Unit.Assert as Assert
@@ -18,10 +19,10 @@ testDiff :: TestSuite
 testDiff = suite "Diff" do
   test "getKey" do
      Assert.equal "text_0" $ getKey 0 $ H.t "test text"
-     Assert.equal "element_span_1" $ getKey 1 $ (H.el $ H.span :: Html)
-     Assert.equal "oelement_div_2" $ getKey 2 $ (H.op $ H.div :: Html)
-     Assert.equal "element_span_key1" $ getKey 1 $ (H.keyed "key1" $ H.el $ H.span :: Html)
-     Assert.equal "oelement_div_key2" $ getKey 2 $ (H.keyed "key2" $ H.op $ H.div :: Html)
+     Assert.equal "element_false_span_1" $ getKey 1 $ (H.span :: Html)
+     Assert.equal "element_true_div_2" $ getKey 2 $ (H.renderingManually $ H.div :: Html)
+     Assert.equal "element_false_span_key1" $ getKey 1 $ (H.keyed "key1" $ H.span :: Html)
+     Assert.equal "element_true_div_key2" $ getKey 2 $ (H.keyed "key2" $ H.renderingManually $ H.div :: Html)
   suite "diff" do
     Safe.for_ targetLists \targetList ->
       test (show startingList <> " -> " <> show targetList) do
