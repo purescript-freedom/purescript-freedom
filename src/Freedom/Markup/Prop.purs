@@ -4,8 +4,7 @@ import Prelude
 
 import Data.String.CodeUnits (singleton)
 import Data.String.Common (joinWith)
-import Freedom.Markup.Common (prop)
-import Freedom.UI (VNode)
+import Freedom.UI (VNode, prop)
 
 -- | Define styles with CSS string.
 -- |

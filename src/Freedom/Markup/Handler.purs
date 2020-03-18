@@ -3,8 +3,7 @@ module Freedom.Markup.Handler where
 import Prelude
 
 import Effect (Effect)
-import Freedom.Markup.Common (handle)
-import Freedom.UI (Operation, VNode)
+import Freedom.UI (Operation, VNode, handle)
 import Web.Event.Event (Event)
 
 onAbort

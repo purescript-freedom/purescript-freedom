@@ -2,13 +2,17 @@ module Freedom.UI
   ( Subscription
   , Renderer
   , Operation
-  , VObject
   , VNode
   , keyed
   , renderingManually
   , t
   , tag
-  , mapVObject
+  , kids
+  , prop
+  , handle
+  , didCreate
+  , didUpdate
+  , didDelete
   , UI
   , createUI
   , renderUI
@@ -32,7 +36,7 @@ import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read, write)
 import Effect.Unsafe (unsafePerformEffect)
 import Foreign (Foreign, unsafeToForeign)
-import Foreign.Object (Object, empty)
+import Foreign.Object (Object, empty, insert)
 import Foreign.Object as Object
 import Freedom.Store (Query)
 import Freedom.Styler (Styler, registerStyle)
@@ -82,7 +86,6 @@ type Operation state =
   , renderer :: Renderer state
   }
 
--- | The representation for a element.
 type VObject state =
   { tagName :: String
   , props :: Object String
@@ -136,7 +139,58 @@ tag tagName = VNode "" $ Element false (createBridgeFoot unit)
   , didDelete: const $ const $ pure unit
   }
 
--- | Map `VObject` of a tag element.
+-- | Add children.
+kids
+  :: forall state
+   . Array (VNode state)
+  -> VNode state
+  -> VNode state
+kids children = mapVObject _ { children = children }
+
+-- | Add a property.
+prop
+  :: forall state
+   . String
+  -> String
+  -> VNode state
+  -> VNode state
+prop name val = mapVObject \vobject ->
+  vobject { props = insert name val vobject.props }
+
+-- | Bind an event handler.
+handle
+  :: forall state
+   . String
+  -> (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
+handle name h = mapVObject \vobject ->
+  vobject { handlers = insert name h vobject.handlers }
+
+-- | Bind `didCreate` lifecycle.
+didCreate
+  :: forall state
+   . (Element -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
+didCreate h = mapVObject _ { didCreate = h }
+
+-- | Bind `didUpdate` lifecycle.
+didUpdate
+  :: forall state
+   . (Element -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
+didUpdate h = mapVObject _ { didUpdate = h }
+
+-- | Bind `didDelete` lifecycle.
+didDelete
+  :: forall state
+   . (Element -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
+didDelete h = mapVObject _ { didDelete = h }
+
 mapVObject
   :: forall state
    . (VObject state -> VObject state)
