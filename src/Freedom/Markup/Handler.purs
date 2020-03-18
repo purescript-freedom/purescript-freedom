@@ -2,584 +2,455 @@ module Freedom.Markup.Handler where
 
 import Prelude
 
-import Control.Monad.Free.Trans (FreeT)
-import Control.Monad.Rec.Class (class MonadRec)
+import Effect (Effect)
 import Freedom.Markup.Common (handle)
-import Freedom.VNode (VObject)
+import Freedom.UI (Operation, VNode)
 import Web.Event.Event (Event)
 
 onAbort
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onAbort = handle "onabort"
 
 onBlur
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onBlur = handle "onblur"
 
 onCancel
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onCancel = handle "oncancel"
 
 onCanPlay
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onCanPlay = handle "oncanplay"
 
 onCanPlayThrough
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onCanPlayThrough = handle "oncanplaythrough"
 
 onChange
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onChange = handle "onchange"
 
 onClick
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onClick = handle "onclick"
 
 onContextMenu
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onContextMenu = handle "oncontextmenu"
 
 onCueChange
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onCueChange = handle "oncuechange"
 
 onDoubleClick
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDoubleClick = handle "ondblclick"
 
 onDrag
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDrag = handle "ondrag"
 
 onDragEnd
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDragEnd = handle "ondragend"
 
 onDragEnter
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDragEnter = handle "ondragenter"
 
 onDragLeave
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDragLeave = handle "ondragleave"
 
 onDragOver
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDragOver = handle "ondragover"
 
 onDragStart
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDragStart = handle "ondragstart"
 
 onDrop
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDrop = handle "ondrop"
 
 onDurationChange
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onDurationChange = handle "ondurationchange"
 
 onEmptied
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onEmptied = handle "onemptied"
 
 onEnded
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onEnded = handle "onended"
 
 onError
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onError = handle "onerror"
 
 onFocus
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onFocus = handle "onfocus"
 
 onInput
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onInput = handle "oninput"
 
 onInvalid
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onInvalid = handle "oninvalid"
 
 onKeyDown
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onKeyDown = handle "onkeydown"
 
 onKeyPress
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onKeyPress = handle "onkeypress"
 
 onKeyUp
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onKeyUp = handle "onkeyup"
 
 onLoad
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onLoad = handle "onload"
 
 onLoadedData
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onLoadedData = handle "onloadeddata"
 
 onLoadedMetadata
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onLoadedMetadata = handle "onloadedmetadata"
 
 onLoadStart
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onLoadStart = handle "onloadstart"
 
 onMouseDown
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseDown = handle "onmousedown"
 
 onMouseEnter
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseEnter = handle "onmouseenter"
 
 onMouseLeave
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseLeave = handle "onmouseleave"
 
 onMouseMove
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseMove = handle "onmousemove"
 
 onMouseOut
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseOut = handle "onmouseout"
 
 onMouseOver
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseOver = handle "onmouseover"
 
 onMouseUp
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onMouseUp = handle "onmouseup"
 
 onPause
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPause = handle "onpause"
 
 onPlay
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPlay = handle "onplay"
 
 onPlaying
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPlaying = handle "onplaying"
 
 onProgress
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onProgress = handle "onprogress"
 
 onRateChange
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onRateChange = handle "onratechange"
 
 onReset
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onReset = handle "onreset"
 
 onScroll
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onScroll = handle "onscroll"
 
 onSeeked
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onSeeked = handle "onseeked"
 
 onSeeking
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onSeeking = handle "onseeking"
 
 onSelect
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onSelect = handle "onselect"
 
 onStalled
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onStalled = handle "onstalled"
 
 onSubmit
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onSubmit = handle "onsubmit"
 
 onSuspend
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onSuspend = handle "onsuspend"
 
 onTimeUpdate
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onTimeUpdate = handle "ontimeupdate"
 
 onToggle
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onToggle = handle "ontoggle"
 
 onVolumeChange
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onVolumeChange = handle "onvolumechange"
 
 onWaiting
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onWaiting = handle "onwaiting"
 
 onWheel
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onWheel = handle "onwheel"
 
 onPointerDown
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerDown = handle "onpointerdown"
 
 onPointerMove
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerMove = handle "onpointermove"
 
 onPointerUp
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerUp = handle "onpointerup"
 
 onPointerCancel
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerCancel = handle "onpointercancel"
 
 onPointerOver
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerOver = handle "onpointerover"
 
 onPointerOut
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerOut = handle "onpointerout"
 
 onPointerEnter
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerEnter = handle "onpointerenter"
 
 onPointerLeave
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => (Event -> FreeT (f state) m Unit)
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . (Event -> Operation state -> Effect Unit)
+  -> VNode state
+  -> VNode state
 onPointerLeave = handle "onpointerleave"

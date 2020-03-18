@@ -1,292 +1,288 @@
 module Freedom.Markup.Tag where
 
-import Prelude
+import Freedom.UI (VNode, tag)
 
-import Control.Monad.Rec.Class (class MonadRec)
-import Freedom.Markup.Common (tag)
-import Freedom.VNode (VObject)
-
-h1 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h1 :: forall state. VNode state
 h1 = tag "h1"
 
-h2 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h2 :: forall state. VNode state
 h2 = tag "h2"
 
-h3 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h3 :: forall state. VNode state
 h3 = tag "h3"
 
-h4 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h4 :: forall state. VNode state
 h4 = tag "h4"
 
-h5 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h5 :: forall state. VNode state
 h5 = tag "h5"
 
-h6 :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+h6 :: forall state. VNode state
 h6 = tag "h6"
 
-div :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+div :: forall state. VNode state
 div = tag "div"
 
-p :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+p :: forall state. VNode state
 p = tag "p"
 
-hr :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+hr :: forall state. VNode state
 hr = tag "hr"
 
-pre :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+pre :: forall state. VNode state
 pre = tag "pre"
 
-blockquote :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+blockquote :: forall state. VNode state
 blockquote = tag "blockquote"
 
-span :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+span :: forall state. VNode state
 span = tag "span"
 
-a :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+a :: forall state. VNode state
 a = tag "a"
 
-code :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+code :: forall state. VNode state
 code = tag "code"
 
-em :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+em :: forall state. VNode state
 em = tag "em"
 
-strong :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+strong :: forall state. VNode state
 strong = tag "strong"
 
-i :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+i :: forall state. VNode state
 i = tag "i"
 
-b :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+b :: forall state. VNode state
 b = tag "b"
 
-u :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+u :: forall state. VNode state
 u = tag "u"
 
-sub :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+sub :: forall state. VNode state
 sub = tag "sub"
 
-sup :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+sup :: forall state. VNode state
 sup = tag "sup"
 
-br :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+br :: forall state. VNode state
 br = tag "br"
 
-ol :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+ol :: forall state. VNode state
 ol = tag "ol"
 
-ul :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+ul :: forall state. VNode state
 ul = tag "ul"
 
-li :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+li :: forall state. VNode state
 li = tag "li"
 
-dl :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+dl :: forall state. VNode state
 dl = tag "dl"
 
-dt :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+dt :: forall state. VNode state
 dt = tag "dt"
 
-dd :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+dd :: forall state. VNode state
 dd = tag "dd"
 
-img :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+img :: forall state. VNode state
 img = tag "img"
 
-iframe :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+iframe :: forall state. VNode state
 iframe = tag "iframe"
 
-canvas :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+canvas :: forall state. VNode state
 canvas = tag "canvas"
 
-math :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+math :: forall state. VNode state
 math = tag "math"
 
-form :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+form :: forall state. VNode state
 form = tag "form"
 
-input :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+input :: forall state. VNode state
 input = tag "input"
 
-textarea :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+textarea :: forall state. VNode state
 textarea = tag "textarea"
 
-button :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+button :: forall state. VNode state
 button = tag "button"
 
-select :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+select :: forall state. VNode state
 select = tag "select"
 
-option :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+option :: forall state. VNode state
 option = tag "option"
 
-section :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+section :: forall state. VNode state
 section = tag "section"
 
-nav :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+nav :: forall state. VNode state
 nav = tag "nav"
 
-article :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+article :: forall state. VNode state
 article = tag "article"
 
-aside :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+aside :: forall state. VNode state
 aside = tag "aside"
 
-header :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+header :: forall state. VNode state
 header = tag "header"
 
-footer :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+footer :: forall state. VNode state
 footer = tag "footer"
 
-address :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+address :: forall state. VNode state
 address = tag "address"
 
-main_ :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+main_ :: forall state. VNode state
 main_ = tag "main"
 
-figure :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+figure :: forall state. VNode state
 figure = tag "figure"
 
-figcaption :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+figcaption :: forall state. VNode state
 figcaption = tag "figcaption"
 
-table :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+table :: forall state. VNode state
 table = tag "table"
 
-caption :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+caption :: forall state. VNode state
 caption = tag "caption"
 
-colgroup :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+colgroup :: forall state. VNode state
 colgroup = tag "colgroup"
 
-col :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+col :: forall state. VNode state
 col = tag "col"
 
-tbody :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+tbody :: forall state. VNode state
 tbody = tag "tbody"
 
-thead :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+thead :: forall state. VNode state
 thead = tag "thead"
 
-tfoot :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+tfoot :: forall state. VNode state
 tfoot = tag "tfoot"
 
-tr :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+tr :: forall state. VNode state
 tr = tag "tr"
 
-td :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+td :: forall state. VNode state
 td = tag "td"
 
-th :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+th :: forall state. VNode state
 th = tag "th"
 
-fieldset :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+fieldset :: forall state. VNode state
 fieldset = tag "fieldset"
 
-legend :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+legend :: forall state. VNode state
 legend = tag "legend"
 
-label :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+label :: forall state. VNode state
 label = tag "label"
 
-datalist :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+datalist :: forall state. VNode state
 datalist = tag "datalist"
 
-optgroup :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+optgroup :: forall state. VNode state
 optgroup = tag "optgroup"
 
-output :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+output :: forall state. VNode state
 output = tag "output"
 
-progress :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+progress :: forall state. VNode state
 progress = tag "progress"
 
-meter :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+meter :: forall state. VNode state
 meter = tag "meter"
 
-audio :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+audio :: forall state. VNode state
 audio = tag "audio"
 
-video :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+video :: forall state. VNode state
 video = tag "video"
 
-source :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+source :: forall state. VNode state
 source = tag "source"
 
-track :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+track :: forall state. VNode state
 track = tag "track"
 
-embed :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+embed :: forall state. VNode state
 embed = tag "embed"
 
-object :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+object :: forall state. VNode state
 object = tag "object"
 
-param :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+param :: forall state. VNode state
 param = tag "param"
 
-ins :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+ins :: forall state. VNode state
 ins = tag "ins"
 
-del :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+del :: forall state. VNode state
 del = tag "del"
 
-small :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+small :: forall state. VNode state
 small = tag "small"
 
-cite :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+cite :: forall state. VNode state
 cite = tag "cite"
 
-dfn :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+dfn :: forall state. VNode state
 dfn = tag "dfn"
 
-abbr :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+abbr :: forall state. VNode state
 abbr = tag "abbr"
 
-time :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+time :: forall state. VNode state
 time = tag "time"
 
-var :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+var :: forall state. VNode state
 var = tag "var"
 
-samp :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+samp :: forall state. VNode state
 samp = tag "samp"
 
-kbd :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+kbd :: forall state. VNode state
 kbd = tag "kbd"
 
-s :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+s :: forall state. VNode state
 s = tag "s"
 
-q :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+q :: forall state. VNode state
 q = tag "q"
 
-mark :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+mark :: forall state. VNode state
 mark = tag "mark"
 
-ruby :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+ruby :: forall state. VNode state
 ruby = tag "ruby"
 
-rt :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+rt :: forall state. VNode state
 rt = tag "rt"
 
-rp :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+rp :: forall state. VNode state
 rp = tag "rp"
 
-bdi :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+bdi :: forall state. VNode state
 bdi = tag "bdi"
 
-bdo :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+bdo :: forall state. VNode state
 bdo = tag "bdo"
 
-wbr :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+wbr :: forall state. VNode state
 wbr = tag "wbr"
 
-details :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+details :: forall state. VNode state
 details = tag "details"
 
-summary :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+summary :: forall state. VNode state
 summary = tag "summary"
 
-menu :: forall f state m. Functor (f state) => MonadRec m => VObject f state m
+menu :: forall state. VNode state
 menu = tag "menu"

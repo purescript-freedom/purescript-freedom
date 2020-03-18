@@ -4,9 +4,14 @@ module Freedom.UI
   , Operation
   , VObject
   , VNode
+  , keyed
+  , renderingManually
+  , t
+  , tag
+  , mapVObject
   , UI
   , createUI
-  , launchUI
+  , renderUI
   ) where
 
 import Prelude
@@ -27,7 +32,7 @@ import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read, write)
 import Effect.Unsafe (unsafePerformEffect)
 import Foreign (Foreign, unsafeToForeign)
-import Foreign.Object (Object)
+import Foreign.Object (Object, empty)
 import Foreign.Object as Object
 import Freedom.Store (Query)
 import Freedom.Styler (Styler, registerStyle)
@@ -79,7 +84,7 @@ type Operation state =
 
 -- | The representation for a element.
 type VObject state =
-  { tag :: String
+  { tagName :: String
   , props :: Object String
   , handlers :: Object (Event -> Operation state -> Effect Unit)
   , children :: Array (VNode state)
@@ -100,10 +105,48 @@ instance hasKeyVNode :: HasKey (VNode state) where
     case velement of
       Text _ ->
         "text_" <> identifier
-      Element isManual _ { tag } ->
-        "element_" <> show isManual <> "_" <> tag <> "_" <> identifier
+      Element isManual _ { tagName } ->
+        "element_" <> show isManual <> "_" <> tagName <> "_" <> identifier
     where
       identifier = if k == "" then show idx else k
+
+-- | Add a key to `VNode`.
+keyed :: forall state. String -> VNode state -> VNode state
+keyed k (VNode _ velement) = VNode k velement
+
+-- | If you want to render children manually, you should use this.
+renderingManually :: forall state. VNode state -> VNode state
+renderingManually (VNode k (Element _ bf vobject)) =
+  VNode k $ Element true bf vobject
+renderingManually vnode = vnode
+
+-- | Create a `VNode` of text.
+t :: forall state. String -> VNode state
+t = VNode "" <<< Text
+
+-- | Create a `VNode` of specified tag element.
+tag :: forall state. String -> VNode state
+tag tagName = VNode "" $ Element false (createBridgeFoot unit)
+  { tagName
+  , props: empty
+  , handlers: empty
+  , children: []
+  , didCreate: const $ const $ pure unit
+  , didUpdate: const $ const $ pure unit
+  , didDelete: const $ const $ pure unit
+  }
+
+-- | Map `VObject` of a tag element.
+mapVObject
+  :: forall state
+   . (VObject state -> VObject state)
+  -> VNode state
+  -> VNode state
+mapVObject updator (VNode k velement) =
+  VNode k case velement of
+    Element isManual bf vobject ->
+      Element isManual bf $ updator vobject
+    text -> text
 
 
 
@@ -157,11 +200,11 @@ createUI selector view query styler = do
     , styler
     }
 
-launchUI
+renderUI
   :: forall state
    . UI state
   -> Effect Unit
-launchUI (UI r@{ query, styler }) =
+renderUI (UI r@{ query, styler }) =
   case r.container of
     Nothing -> error "Received selector is not found."
     Just node -> do
@@ -253,8 +296,8 @@ switchContextIfSVG
   -> ReaderT (UIContext state) Effect Unit
   -> ReaderT (UIContext state) Effect Unit
 switchContextIfSVG (Text _) m = m
-switchContextIfSVG (Element _ _ element) m =
-  local (changeSVGContext $ element.tag == "svg") m
+switchContextIfSVG (Element _ _ vobject) m =
+  local (changeSVGContext $ vobject.tagName == "svg") m
 
 changeSVGContext
   :: forall state
@@ -270,13 +313,13 @@ operateCreating
   -> ReaderT (UIContext state) Effect Node
 operateCreating (Text text) =
   liftEffect $ createText_ text >>= T.toNode >>> pure
-operateCreating (Element isManual bf element) =
+operateCreating (Element isManual bf vobject) =
   withNewUIContext bf do
-    el <- createElement_ element
+    el <- createElement_ vobject
     let node = E.toNode el
     when (not isManual) do
       { renderer } <- ask <#> toOperation
-      liftEffect $ renderer.renderChildren node element.children
+      liftEffect $ renderer.renderChildren node vobject.children
     pure node
 
 runDidCreate
@@ -284,10 +327,10 @@ runDidCreate
    . Node
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
-runDidCreate node (Element _ bf element) =
+runDidCreate node (Element _ bf vobject) =
   withNewUIContext bf
     $ runLifecycle
-    $ element.didCreate
+    $ vobject.didCreate
     $ unsafeCoerce node
 runDidCreate _ _ = pure unit
 
@@ -307,10 +350,10 @@ runDidDelete
    . Node
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
-runDidDelete node (Element _ bf element) =
+runDidDelete node (Element _ bf vobject) =
   withNewUIContext bf
     $ runLifecycle
-    $ element.didDelete
+    $ vobject.didDelete
     $ unsafeCoerce node
 runDidDelete _ _ = pure unit
 
@@ -361,11 +404,11 @@ createElement_
   :: forall state
    . VObject state
   -> ReaderT (UIContext state) Effect Element
-createElement_ { tag, props, handlers } = do
+createElement_ { tagName, props, handlers } = do
   { isSVG } <- ask
   el <- liftEffect if isSVG
-    then doc >>= createElementNS svgNameSpace tag
-    else doc >>= createElement tag
+    then doc >>= createElementNS svgNameSpace tagName
+    else doc >>= createElement tagName
   let props' :: Array (Tuple String String)
       props' = Object.toUnfoldable props
       handlers' :: Array (Tuple String (Event -> Operation state -> Effect Unit))

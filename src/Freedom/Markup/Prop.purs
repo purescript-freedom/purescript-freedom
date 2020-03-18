@@ -2,20 +2,19 @@ module Freedom.Markup.Prop where
 
 import Prelude
 
-import Control.Monad.Rec.Class (class MonadRec)
 import Data.String.CodeUnits (singleton)
 import Data.String.Common (joinWith)
 import Freedom.Markup.Common (prop)
-import Freedom.VNode (VObject)
+import Freedom.UI (VNode)
 
 -- | Define styles with CSS string.
 -- |
 -- | It generates a hash string as class name from CSS string, and the generated class name is used automatically.
 -- |
 -- | ```purescript
--- | justDiv :: Html
+-- | justDiv :: forall state. VNode state
 -- | justDiv =
--- |   H.el $ H.div # H.css styles
+-- |   H.div # H.css styles
 -- |
 -- | styles :: String
 -- | styles =
@@ -52,730 +51,568 @@ import Freedom.VNode (VObject)
 -- | }
 -- | ```
 css
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 css = prop "css"
 
 style
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 style = prop "style"
 
 className
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 className = prop "className"
 
 classNames
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Array String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Array String
+  -> VNode state
+  -> VNode state
 classNames = joinWith " " >>> className
 
 id
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 id = prop "id"
 
 title
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 title = prop "title"
 
 hidden
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 hidden = show >>> prop "hidden"
 
 type_
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 type_ = prop "type"
 
 value
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 value = prop "value"
 
 defaultValue
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 defaultValue = prop "defaultValue"
 
 checked
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 checked = show >>> prop "checked"
 
 placeholder
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 placeholder = prop "placeholder"
 
 selected
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 selected = show >>> prop "selected"
 
 accept
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 accept = prop "accept"
 
 acceptCharset
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 acceptCharset = prop "acceptCharset"
 
 action
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 action = prop "action"
 
 autocomplete
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 autocomplete = prop "autocomplete"
 
 autofocus
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 autofocus = show >>> prop "autofocus"
 
 disabled
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 disabled = show >>> prop "disabled"
 
 enctype
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 enctype = prop "enctype"
 
 formAction
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 formAction = prop "formAction"
 
 list
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 list = prop "list"
 
 maxLength
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 maxLength = show >>> prop "maxLength"
 
 minLength
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 minLength = show >>> prop "minLength"
 
 method
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 method = prop "method"
 
 multiple
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 multiple = show >>> prop "multiple"
 
 name
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 name = prop "name"
 
 noValidate
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 noValidate = show >>> prop "noValidate"
 
 pattern
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 pattern = prop "pattern"
 
 readOnly
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 readOnly = show >>> prop "readOnly"
 
 required
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 required = show >>> prop "required"
 
 size
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 size = show >>> prop "size"
 
 htmlFor
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 htmlFor = prop "htmlFor"
 
 form
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 form = prop "form"
 
 max
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 max = prop "max"
 
 min
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 min = prop "min"
 
 step
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 step = prop "step"
 
 cols
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 cols = show >>> prop "cols"
 
 rows
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 rows = show >>> prop "rows"
 
 wrap
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 wrap = prop "wrap"
 
 href
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 href = prop "href"
 
 target
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 target = prop "target"
 
 download
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 download = prop "download"
 
 hreflang
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 hreflang = prop "hreflang"
 
 media
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 media = prop "media"
 
 ping
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 ping = prop "ping"
 
 rel
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 rel = prop "rel"
 
 isMap
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 isMap = show >>> prop "isMap"
 
 useMap
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 useMap = prop "useMap"
 
 shape
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 shape = prop "shape"
 
 coords
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 coords = prop "coords"
 
 src
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 src = prop "src"
 
 height
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 height = show >>> prop "height"
 
 width
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 width = show >>> prop "width"
 
 alt
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 alt = prop "alt"
 
 autoplay
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 autoplay = show >>> prop "autoplay"
 
 controls
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 controls = show >>> prop "controls"
 
 loop
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 loop = show >>> prop "loop"
 
 preload
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 preload = prop "preload"
 
 poster
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 poster = prop "poster"
 
 default
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 default = show >>> prop "default"
 
 kind_
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 kind_ = prop "kind"
 
 srclang
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 srclang = prop "srclang"
 
 sandbox
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 sandbox = prop "sandbox"
 
 srcdoc
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 srcdoc = prop "srcdoc"
 
 reversed
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 reversed = show >>> prop "reversed"
 
 start
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 start = show >>> prop "start"
 
 colSpan
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 colSpan = show >>> prop "colSpan"
 
 rowSpan
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 rowSpan = show >>> prop "rowSpan"
 
 headers
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 headers = prop "headers"
 
 scope
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 scope = prop "scope"
 
 accessKey
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Char
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Char
+  -> VNode state
+  -> VNode state
 accessKey = singleton >>> prop "accessKey"
 
 contentEditable
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 contentEditable = show >>> prop "contentEditable"
 
 dir
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 dir = prop "dir"
 
 draggable
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 draggable = show >>> prop "draggable"
 
 dropzone
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 dropzone = prop "dropzone"
 
 lang
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 lang = prop "lang"
 
 spellcheck
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Boolean
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Boolean
+  -> VNode state
+  -> VNode state
 spellcheck = show >>> prop "spellcheck"
 
 tabIndex
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => Int
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . Int
+  -> VNode state
+  -> VNode state
 tabIndex = show >>> prop "tabIndex"
 
 cite
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 cite = prop "cite"
 
 dateTime
-  :: forall f state m
-   . Functor (f state)
-  => MonadRec m
-  => String
-  -> VObject f state m
-  -> VObject f state m
+  :: forall state
+   . String
+  -> VNode state
+  -> VNode state
 dateTime = prop "dateTime"
