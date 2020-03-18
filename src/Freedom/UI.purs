@@ -1,5 +1,6 @@
 module Freedom.UI
-  ( Renderer
+  ( Subscription
+  , Renderer
   , Operation
   , VObject
   , VNode
@@ -52,6 +53,11 @@ import Web.HTML.Window (document, requestAnimationFrame)
 
 
 -- User interfaces
+
+-- | The type of subscription
+-- |
+-- | Hooks of events that aren't related a specific node like window events, timers and so on.
+type Subscription state = Query state -> Effect Unit
 
 -- | The type of rendering operations.
 -- |
