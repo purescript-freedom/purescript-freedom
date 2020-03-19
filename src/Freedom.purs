@@ -24,7 +24,7 @@ run :: forall state. Config state -> Effect Unit
 run { selector, initialState, view, subscriptions } = do
   styler <- createStyler
   store <- createStore initialState
-  sequence_ $ subscriptions <#> (\s -> s $ query store)
+  sequence_ $ subscriptions <@> query store
   ui <- createUI selector view (query store) styler
   subscribe (renderUI ui) store
   renderUI ui
