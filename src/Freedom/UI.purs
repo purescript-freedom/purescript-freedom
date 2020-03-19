@@ -63,7 +63,7 @@ import Web.HTML.Window (document, requestAnimationFrame)
 
 -- User interfaces
 
--- | The type of subscription
+-- | The type of subscription.
 -- |
 -- | Hooks of events that aren't related a specific node like window events, timers and so on.
 type Subscription state = Query state -> Effect Unit
@@ -224,6 +224,7 @@ fromBridgeFoot (BridgeFoot ref) = read ref
 
 -- For UI constructor
 
+-- | This is for internal. Do not use it.
 newtype UI state = UI
   { container :: Maybe Node
   , view :: state -> VNode state
@@ -233,6 +234,7 @@ newtype UI state = UI
   , styler :: Styler
   }
 
+-- | This is for internal. Do not use it.
 createUI
   :: forall state
    . String
@@ -254,6 +256,7 @@ createUI selector view query styler = do
     , styler
     }
 
+-- | This is for internal. Do not use it.
 renderUI
   :: forall state
    . UI state
