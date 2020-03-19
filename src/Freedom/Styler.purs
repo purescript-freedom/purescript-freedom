@@ -11,7 +11,6 @@ import Data.Foldable (foldr)
 import Data.Int (base36, toStringAs)
 import Data.Int.Bits (xor, zshr)
 import Data.Maybe (Maybe(..), fromJust)
-import Data.Nullable (Nullable, toMaybe)
 import Data.String (Pattern(..), Replacement(..), joinWith, replaceAll, trim)
 import Data.String.CodeUnits (toCharArray)
 import Data.String.Regex (replace)
@@ -27,8 +26,8 @@ import Web.DOM.Element as E
 import Web.DOM.Node (Node, appendChild, setTextContent)
 import Web.DOM.ParentNode (QuerySelector(..), querySelector)
 import Web.HTML (window)
-import Web.HTML.HTMLDocument (HTMLDocument, toDocument, toParentNode)
-import Web.HTML.HTMLElement (HTMLElement, toNode)
+import Web.HTML.HTMLDocument (head, toDocument, toParentNode)
+import Web.HTML.HTMLElement (toNode)
 import Web.HTML.Window (document)
 
 data Event = Register
@@ -91,8 +90,3 @@ generateHash str = toStringAs base36 $ zshr seed 0
   where
     culc char value = xor (value * 33) (toCharCode char)
     seed = foldr culc 5381 $ toCharArray str
-
-head :: HTMLDocument -> Effect (Maybe HTMLElement)
-head = map toMaybe <<< _head
-
-foreign import _head :: HTMLDocument -> Effect (Nullable HTMLElement)
