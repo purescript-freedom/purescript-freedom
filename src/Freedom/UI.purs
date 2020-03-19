@@ -36,7 +36,7 @@ import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read, write)
 import Effect.Unsafe (unsafePerformEffect)
 import Foreign (Foreign, unsafeToForeign)
-import Foreign.Object (Object, empty, insert)
+import Foreign.Object (Object)
 import Foreign.Object as Object
 import Freedom.Store (Query)
 import Freedom.Styler (Styler, registerStyle)
@@ -131,8 +131,8 @@ t = VNode "" <<< Text
 tag :: forall state. String -> VNode state
 tag tagName = VNode "" $ Element false (createBridgeFoot unit)
   { tagName
-  , props: empty
-  , handlers: empty
+  , props: Object.empty
+  , handlers: Object.empty
   , children: []
   , didCreate: const $ const $ pure unit
   , didUpdate: const $ const $ pure unit
@@ -155,7 +155,7 @@ prop
   -> VNode state
   -> VNode state
 prop name val = mapVObject \vobject ->
-  vobject { props = insert name val vobject.props }
+  vobject { props = Object.insert name val vobject.props }
 
 -- | Bind an event handler.
 handle
@@ -165,7 +165,7 @@ handle
   -> VNode state
   -> VNode state
 handle name h = mapVObject \vobject ->
-  vobject { handlers = insert name h vobject.handlers }
+  vobject { handlers = Object.insert name h vobject.handlers }
 
 -- | Bind `didCreate` lifecycle.
 didCreate
