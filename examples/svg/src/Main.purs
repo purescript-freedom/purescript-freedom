@@ -5,41 +5,39 @@ import Prelude
 import Effect (Effect)
 import Freedom as Freedom
 import Freedom.Markup as H
-import Freedom.TransformF.Simple (VQueryF, transformF)
-import Freedom.VNode (VNode)
+import Freedom.UI (VNode)
 
 type State = Unit
 
-type Html = VNode VQueryF State
+type Html = VNode State
 
 main :: Effect Unit
 main = Freedom.run
   { selector: "#app"
   , initialState: unit
   , subscriptions: []
-  , transformF
   , view
   }
 
 view :: State -> Html
 view _ =
-  H.el $ H.tag "svg"
+  H.tag "svg"
     # H.css cssSVG
     # H.prop "viewBox" "0 0 1000 600"
     # H.kids
-        [ H.el $ H.tag "symbol" # H.id "s-text" # H.kids
-            [ H.el $ H.tag "text"
+        [ H.tag "symbol" # H.id "s-text" # H.kids
+            [ H.tag "text"
                 # H.prop "text-anchor" "middle"
                 # H.prop "x" "50%"
                 # H.prop "y" "68%"
                 # H.kids [ H.t "Freedom" ]
             ]
-        , H.el $ H.tag "g" # H.kids
-            [ H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+        , H.tag "g" # H.kids
+            [ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
             ]
         ]
   where
