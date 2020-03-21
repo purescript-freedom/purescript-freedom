@@ -9,8 +9,6 @@ import Freedom.UI (VNode)
 
 type State = Unit
 
-type Html = VNode State
-
 main :: Effect Unit
 main = Freedom.run
   { selector: "#app"
@@ -19,7 +17,7 @@ main = Freedom.run
   , view
   }
 
-view :: State -> Html
+view :: State -> VNode State
 view _ =
   H.tag "svg"
     # H.css cssSVG
