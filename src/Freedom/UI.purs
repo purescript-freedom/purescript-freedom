@@ -20,7 +20,7 @@ module Freedom.UI
 
 import Prelude
 
-import Control.Monad.Reader (ReaderT, ask, local, runReaderT, withReaderT)
+import Control.Monad.Reader (ReaderT, ask, local, runReaderT)
 import Control.Safely as Safe
 import Data.Array (filter, notElem, snoc, take, union, (!!), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -441,7 +441,7 @@ withNewUIContext
 withNewUIContext bf reader = do
   { query, styler, isSVG } <- ask
   historyRef <- liftEffect $ fromBridgeFoot bf
-  withReaderT (const { historyRef, query, styler, isSVG }) reader
+  local (const { historyRef, query, styler, isSVG }) reader
 
 
 
