@@ -229,7 +229,7 @@ newtype UI state = UI
   { container :: Maybe Node
   , view :: state -> VNode state
   , renderFlagRef :: Ref Boolean
-  , historyRef :: Ref (Array (VNode state))
+  , historyRef :: History state
   , query :: Query state
   , styler :: Styler
   }
@@ -261,7 +261,7 @@ renderUI
   :: forall state
    . UI state
   -> Effect Unit
-renderUI (UI r@{ query, styler }) =
+renderUI (UI r@{ historyRef, query, styler }) =
   case r.container of
     Nothing -> error "Received selector is not found."
     Just node -> do
@@ -271,28 +271,20 @@ renderUI (UI r@{ query, styler }) =
         void $ window >>= requestAnimationFrame do
           write false r.renderFlagRef
           state <- query.select
-          history <- flip modify r.historyRef \h -> take 2 $ r.view state : h
-          historyRef <- new [] -- This is non used children ref.
-          flip runReaderT
-            { historyRef
-            , query
-            , styler
-            , isSVG: false
-            }
-            $ patch
-                { current: history !! 1
-                , next: history !! 0
-                , realParentNode: node
-                , realNodeIndex: 0
-                , moveIndex: Nothing
-                }
+          history <- flip modify historyRef \h -> take 2 $ [ r.view state ] : h
+          flip runReaderT { historyRef, query, styler, isSVG: false }
+            $ diff patch node
+                (fromMaybe [] $ history !! 1)
+                (fromMaybe [] $ history !! 0)
 
 
 
 -- For rendering process
 
+type History state = Ref (Array (Array (VNode state)))
+
 type UIContext state =
-  { historyRef :: Ref (Array (Array (VNode state)))
+  { historyRef :: History state
   , query :: Query state
   , styler :: Styler
   , isSVG :: Boolean
