@@ -29,12 +29,12 @@ import Data.String as S
 import Data.String.Regex (Regex, replace, test)
 import Data.String.Regex.Flags (noFlags)
 import Data.String.Regex.Unsafe (unsafeRegex)
-import Data.Tuple (Tuple, uncurry)
+import Data.Traversable (sequence)
+import Data.Tuple (Tuple(..), fst, uncurry)
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read, write)
-import Effect.Unsafe (unsafePerformEffect)
 import Foreign (Foreign, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
@@ -98,7 +98,7 @@ type VObject state =
 
 data VElement state
   = Text String
-  | Element Boolean (BridgeFoot state) (VObject state)
+  | Element Boolean (VObject state)
 
 -- | The type of virtual node.
 data VNode state = VNode String (VElement state)
@@ -108,7 +108,7 @@ instance hasKeyVNode :: HasKey (VNode state) where
     case velement of
       Text _ ->
         "text_" <> identifier
-      Element isManual _ { tagName } ->
+      Element isManual { tagName } ->
         "element_" <> show isManual <> "_" <> tagName <> "_" <> identifier
     where
       identifier = if k == "" then show idx else k
@@ -119,8 +119,8 @@ keyed k (VNode _ velement) = VNode k velement
 
 -- | If you want to render children manually, you should use this.
 renderingManually :: forall state. VNode state -> VNode state
-renderingManually (VNode k (Element _ bf vobject)) =
-  VNode k $ Element true bf vobject
+renderingManually (VNode k (Element _ vobject)) =
+  VNode k $ Element true vobject
 renderingManually vnode = vnode
 
 -- | Create a `VNode` of text.
@@ -129,7 +129,7 @@ t = VNode "" <<< Text
 
 -- | Create a `VNode` of specified tag element.
 tag :: forall state. String -> VNode state
-tag tagName = VNode "" $ Element false (createBridgeFoot unit)
+tag tagName = VNode "" $ Element false
   { tagName
   , props: Object.empty
   , handlers: Object.empty
@@ -198,27 +198,43 @@ mapVObject
   -> VNode state
 mapVObject updator (VNode k velement) =
   VNode k case velement of
-    Element isManual bf vobject ->
-      Element isManual bf $ updator vobject
+    Element isManual vobject ->
+      Element isManual $ updator vobject
     text -> text
 
 
 
 -- For rendering history bridging
 
-newtype BridgeFoot state = BridgeFoot (Ref (Ref (Array (Array (VNode state)))))
+type History state =
+  Array (Array (Tuple (VNode state) (HistoryRef state)))
 
-createBridgeFoot :: forall state. Unit -> BridgeFoot state
-createBridgeFoot _ = BridgeFoot $ unsafePerformEffect $ new [] >>= new
+newtype HistoryRef state = HistoryRef (Ref (Ref (History state)))
 
-bridge :: forall state. BridgeFoot state -> BridgeFoot state -> Effect Unit
-bridge (BridgeFoot from) (BridgeFoot to) = read from >>= flip write to
+newHistoryRef :: forall state. Effect (HistoryRef state)
+newHistoryRef = HistoryRef <$> (new [] >>= new)
 
-fromBridgeFoot
+addToHistoryRef
   :: forall state
-   . BridgeFoot state
-  -> Effect (Ref (Array (Array (VNode state))))
-fromBridgeFoot (BridgeFoot ref) = read ref
+   . Array (Tuple (VNode state) (HistoryRef state))
+  -> HistoryRef state
+  -> Effect (History state)
+addToHistoryRef result (HistoryRef ref) =
+  read ref >>= modify \h -> take 2 $ result : h
+
+readHistoryRef
+  :: forall state
+   . HistoryRef state
+  -> Effect (History state)
+readHistoryRef (HistoryRef ref) = read ref >>= read
+
+bridgeHistoryRef
+  :: forall state
+   . HistoryRef state
+  -> HistoryRef state
+  -> Effect Unit
+bridgeHistoryRef (HistoryRef from) (HistoryRef to) =
+  read from >>= flip write to
 
 
 
@@ -229,7 +245,7 @@ newtype UI state = UI
   { container :: Maybe Node
   , view :: state -> VNode state
   , renderFlagRef :: Ref Boolean
-  , historyRef :: History state
+  , historyRef :: HistoryRef state
   , query :: Query state
   , styler :: Styler
   }
@@ -246,7 +262,7 @@ createUI selector view query styler = do
   parentNode <- toParentNode <$> (window >>= document)
   container <- map E.toNode <$> querySelector (QuerySelector selector) parentNode
   renderFlagRef <- new false
-  historyRef <- new []
+  historyRef <- newHistoryRef
   pure $ UI
     { container
     , view
@@ -271,7 +287,11 @@ renderUI (UI r@{ historyRef, query, styler }) =
         void $ window >>= requestAnimationFrame do
           write false r.renderFlagRef
           state <- query.select
-          history <- flip modify historyRef \h -> take 2 $ [ r.view state ] : h
+          grandHistoryRef <- newHistoryRef
+          history <-
+            addToHistoryRef
+              [ Tuple (r.view state) grandHistoryRef ]
+              historyRef
           flip runReaderT { historyRef, query, styler, isSVG: false }
             $ diff patch node
                 (fromMaybe [] $ history !! 1)
@@ -281,18 +301,16 @@ renderUI (UI r@{ historyRef, query, styler }) =
 
 -- For rendering process
 
-type History state = Ref (Array (Array (VNode state)))
-
 type UIContext state =
-  { historyRef :: History state
+  { historyRef :: HistoryRef state
   , query :: Query state
   , styler :: Styler
   , isSVG :: Boolean
   }
 
 type PatchArgs state =
-  { current :: Maybe (VNode state)
-  , next :: Maybe (VNode state)
+  { current :: Maybe (Tuple (VNode state) (HistoryRef state))
+  , next :: Maybe (Tuple (VNode state) (HistoryRef state))
   , realParentNode :: Node
   , realNodeIndex :: Int
   , moveIndex :: Maybe Int
@@ -306,47 +324,54 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
   case current, next of
     Nothing, Nothing -> pure unit
 
-    Nothing, Just (VNode _ next') -> switchContextIfSVG next' do
-      newNode <- operateCreating next'
-      maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
-      liftEffect do
-        void case maybeNode of
-          Nothing -> appendChild newNode realParentNode
-          Just node -> insertBefore newNode node realParentNode
-      runDidCreate newNode next'
+    Nothing, Just (Tuple (VNode _ next') nextHistoryRef) ->
+      switchContext nextHistoryRef next' do
+        newNode <- operateCreating next'
+        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        liftEffect do
+          void case maybeNode of
+            Nothing -> appendChild newNode realParentNode
+            Just node -> insertBefore newNode node realParentNode
+        runDidCreate newNode next'
 
-    Just (VNode _ current'), Nothing -> switchContextIfSVG current' do
-      maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
-      case maybeNode of
-        Nothing -> pure unit
-        Just node -> do
-          operateDeleting node current'
-          liftEffect $ void $ removeChild node realParentNode
-          runDidDelete node current'
+    Just (Tuple (VNode _ current') currentHistoryRef), Nothing ->
+      switchContext currentHistoryRef current' do
+        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        case maybeNode of
+          Nothing -> pure unit
+          Just node -> do
+            operateDeleting node current'
+            liftEffect $ void $ removeChild node realParentNode
+            runDidDelete node current'
 
-    Just (VNode _ current'), Just (VNode _ next') -> switchContextIfSVG next' do
-      maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
-      case maybeNode of
-        Nothing -> pure unit
-        Just node -> do
-          case moveIndex of
-            Nothing -> pure unit
-            Just mi -> liftEffect do
-              let adjustedIdx = if realNodeIndex < mi then mi + 1 else mi
-              maybeAfterNode <- childNode adjustedIdx realParentNode
-              void case maybeAfterNode of
-                Nothing -> appendChild node realParentNode
-                Just afterNode -> insertBefore node afterNode realParentNode
-          operateUpdating node current' next'
+    Just (Tuple (VNode _ current') currentHistoryRef), Just (Tuple (VNode _ next') nextHistoryRef) -> do
+      liftEffect $ bridgeHistoryRef currentHistoryRef nextHistoryRef
+      switchContext nextHistoryRef next' do
+        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        case maybeNode of
+          Nothing -> pure unit
+          Just node -> do
+            case moveIndex of
+              Nothing -> pure unit
+              Just mi -> liftEffect do
+                let adjustedIdx = if realNodeIndex < mi then mi + 1 else mi
+                maybeAfterNode <- childNode adjustedIdx realParentNode
+                void case maybeAfterNode of
+                  Nothing -> appendChild node realParentNode
+                  Just afterNode -> insertBefore node afterNode realParentNode
+            operateUpdating node current' next'
 
-switchContextIfSVG
+switchContext
   :: forall state
-   . VElement state
+   . HistoryRef state
+  -> VElement state
   -> ReaderT (UIContext state) Effect Unit
   -> ReaderT (UIContext state) Effect Unit
-switchContextIfSVG (Text _) m = m
-switchContextIfSVG (Element _ _ vobject) m =
-  local (changeSVGContext $ vobject.tagName == "svg") m
+switchContext _ (Text _) m = m
+switchContext historyRef (Element _ vobject) m =
+  flip local m
+    $ (changeSVGContext $ vobject.tagName == "svg")
+    >>> _ { historyRef = historyRef }
 
 changeSVGContext
   :: forall state
@@ -362,25 +387,21 @@ operateCreating
   -> ReaderT (UIContext state) Effect Node
 operateCreating (Text text) =
   liftEffect $ createText_ text >>= T.toNode >>> pure
-operateCreating (Element isManual bf vobject) =
-  withNewUIContext bf do
-    el <- createElement_ vobject
-    let node = E.toNode el
-    when (not isManual) do
-      { renderer } <- ask <#> toOperation
-      liftEffect $ renderer.renderChildren node vobject.children
-    pure node
+operateCreating (Element isManual vobject) = do
+  el <- createElement_ vobject
+  let node = E.toNode el
+  when (not isManual) do
+    { renderer } <- ask <#> toOperation
+    liftEffect $ renderer.renderChildren node vobject.children
+  pure node
 
 runDidCreate
   :: forall state
    . Node
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
-runDidCreate node (Element _ bf vobject) =
-  withNewUIContext bf
-    $ runLifecycle
-    $ vobject.didCreate
-    $ unsafeCoerce node
+runDidCreate node (Element _ vobject) =
+  runLifecycle $ vobject.didCreate $ unsafeCoerce node
 runDidCreate _ _ = pure unit
 
 operateDeleting
@@ -388,7 +409,7 @@ operateDeleting
    . Node
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
-operateDeleting node (Element isManual bf _) =
+operateDeleting node (Element isManual _) =
   when (not isManual) do
     { renderer } <- ask <#> toOperation
     liftEffect $ renderer.renderChildren node []
@@ -399,11 +420,8 @@ runDidDelete
    . Node
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
-runDidDelete node (Element _ bf vobject) =
-  withNewUIContext bf
-    $ runLifecycle
-    $ vobject.didDelete
-    $ unsafeCoerce node
+runDidDelete node (Element _ vobject) =
+  runLifecycle $ vobject.didDelete $ unsafeCoerce node
 runDidDelete _ _ = pure unit
 
 operateUpdating
@@ -414,26 +432,33 @@ operateUpdating
   -> ReaderT (UIContext state) Effect Unit
 operateUpdating node (Text c) (Text n) =
   liftEffect $ updateText_ c n node
-operateUpdating node (Element _ cbf c) (Element isManual nbf n) = do
-  liftEffect $ bridge cbf nbf
-  withNewUIContext nbf do
-    let el = unsafeCoerce node
-    updateElement_ c n el
-    when (not isManual) do
-      { renderer } <- ask <#> toOperation
-      liftEffect $ renderer.renderChildren node n.children
-    runLifecycle $ n.didUpdate el
+operateUpdating node (Element _ c) (Element isManual n) = do
+  let el = unsafeCoerce node
+  updateElement_ c n el
+  when (not isManual) do
+    { renderer } <- ask <#> toOperation
+    liftEffect $ renderer.renderChildren node n.children
+  runLifecycle $ n.didUpdate el
 operateUpdating _ _ _ = pure unit
 
-withNewUIContext
-  :: forall state a
-   . BridgeFoot state
-  -> ReaderT (UIContext state) Effect a
-  -> ReaderT (UIContext state) Effect a
-withNewUIContext bf reader = do
-  { query, styler, isSVG } <- ask
-  historyRef <- liftEffect $ fromBridgeFoot bf
-  local (const { historyRef, query, styler, isSVG }) reader
+toOperation :: forall state. UIContext state -> Operation state
+toOperation ctx =
+  { query: ctx.query
+  , renderer:
+      { getLatestRenderedChildren
+      , renderChildren
+      }
+  }
+  where
+    getLatestRenderedChildren =
+      map fst <$> fromMaybe [] <$> (_ !! 0) <$> readHistoryRef ctx.historyRef
+    renderChildren node children = do
+      result <- sequence $ children <#> \c -> Tuple c <$> newHistoryRef
+      history <- addToHistoryRef result ctx.historyRef
+      flip runReaderT ctx do
+        diff patch node
+          (fromMaybe [] $ history !! 1)
+          (fromMaybe [] $ history !! 0)
 
 
 
@@ -513,24 +538,6 @@ updateHandlers currents nexts el =
         Nothing, Nothing -> pure unit
         Just _, Nothing -> liftEffect $ removeHandler name el
         _, Just h -> setHandler name h el
-
-toOperation :: forall state. UIContext state -> Operation state
-toOperation ctx =
-  { query: ctx.query
-  , renderer:
-      { getLatestRenderedChildren
-      , renderChildren
-      }
-  }
-  where
-    getLatestRenderedChildren =
-      fromMaybe [] <$> (_ !! 0) <$> read ctx.historyRef
-    renderChildren node children = do
-      history <- flip modify ctx.historyRef \h -> take 2 $ children : h
-      flip runReaderT ctx do
-        diff patch node
-          (fromMaybe [] $ history !! 1)
-          (fromMaybe [] $ history !! 0)
 
 removeProp
   :: forall state
