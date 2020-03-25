@@ -20,7 +20,7 @@ main = Freedom.run
 view :: State -> VNode State
 view _ =
   H.tag "svg"
-    # H.css cssSVG
+    # H.css svgStyles
     # H.prop "viewBox" "0 0 1000 600"
     # H.kids
         [ H.tag "symbol" # H.id "s-text" # H.kids
@@ -31,29 +31,28 @@ view _ =
                 # H.kids [ H.t "Freedom" ]
             ]
         , H.tag "g" # H.kids
-            [ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+            [ H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
             ]
         ]
   where
-    cssSVG =
+    svgStyles =
       """
-      html, body { height: 100%; }
       body {
+        margin: 0;
         background: #082330;
         background-size: .12em 100%;
-        font: 16em/1 Arial;
       }
       .& {
-        position: absolute;
+        font: 16em/1 Arial;
         width: 100%;
-        height: 100%;
+        height: 100vh;
       }
       """
-    cssUse =
+    useStyles =
       """
       .& {
         fill: none;
