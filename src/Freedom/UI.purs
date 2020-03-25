@@ -26,38 +26,28 @@ import Data.Array (filter, notElem, snoc, take, union, (!!), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Nullable (null)
 import Data.String as S
-import Data.String.Regex (Regex, replace, test)
-import Data.String.Regex.Flags (noFlags)
-import Data.String.Regex.Unsafe (unsafeRegex)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..), fst, uncurry)
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Effect.Console (error)
 import Effect.Ref (Ref, modify, new, read, write)
-import Foreign (Foreign, unsafeToForeign)
+import Foreign (unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Freedom.Store (Query)
 import Freedom.Styler (Styler, registerStyle)
 import Freedom.UI.Class (class HasKey)
 import Freedom.UI.Diff (diff)
+import Freedom.UI.Util as Util
 import Unsafe.Coerce (unsafeCoerce)
 import Web.DOM.DOMTokenList as DTL
-import Web.DOM.Document (Document, createElement, createElementNS, createTextNode)
 import Web.DOM.Element (Element)
 import Web.DOM.Element as E
-import Web.DOM.Node (Node, appendChild, childNodes, insertBefore, removeChild, setTextContent)
-import Web.DOM.NodeList (item)
-import Web.DOM.ParentNode (QuerySelector(..), querySelector)
-import Web.DOM.Text (Text)
-import Web.DOM.Text as T
+import Web.DOM.Node (Node, appendChild, insertBefore, removeChild)
 import Web.Event.Event (Event)
 import Web.Event.EventTarget (eventListener)
-import Web.HTML (window)
-import Web.HTML.HTMLDocument (toDocument, toParentNode)
 import Web.HTML.HTMLElement (classList, fromElement)
-import Web.HTML.Window (document, requestAnimationFrame)
 
 
 
@@ -259,8 +249,7 @@ createUI
   -> Styler
   -> Effect (UI state)
 createUI selector view query styler = do
-  parentNode <- toParentNode <$> (window >>= document)
-  container <- map E.toNode <$> querySelector (QuerySelector selector) parentNode
+  container <- Util.findContainerNode selector
   renderFlagRef <- new false
   historyRef <- newHistoryRef
   pure $ UI
@@ -284,7 +273,7 @@ renderUI (UI r@{ historyRef, query, styler }) =
       renderFlag <- read r.renderFlagRef
       when (not renderFlag) do
         write true r.renderFlagRef
-        void $ window >>= requestAnimationFrame do
+        Util.raf do
           write false r.renderFlagRef
           state <- query.select
           grandHistoryRef <- newHistoryRef
@@ -299,7 +288,7 @@ renderUI (UI r@{ historyRef, query, styler }) =
 
 
 
--- For rendering process
+-- For patching
 
 type UIContext state =
   { historyRef :: HistoryRef state
@@ -327,7 +316,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
     Nothing, Just (Tuple (VNode _ next') nextHistoryRef) ->
       switchContext nextHistoryRef next' do
         newNode <- operateCreating next'
-        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        maybeNode <- liftEffect $ Util.childNode realNodeIndex realParentNode
         liftEffect do
           void case maybeNode of
             Nothing -> appendChild newNode realParentNode
@@ -336,7 +325,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
 
     Just (Tuple (VNode _ current') currentHistoryRef), Nothing ->
       switchContext currentHistoryRef current' do
-        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        maybeNode <- liftEffect $ Util.childNode realNodeIndex realParentNode
         case maybeNode of
           Nothing -> pure unit
           Just node -> do
@@ -347,7 +336,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
     Just (Tuple (VNode _ current') currentHistoryRef), Just (Tuple (VNode _ next') nextHistoryRef) -> do
       liftEffect $ bridgeHistoryRef currentHistoryRef nextHistoryRef
       switchContext nextHistoryRef next' do
-        maybeNode <- liftEffect $ childNode realNodeIndex realParentNode
+        maybeNode <- liftEffect $ Util.childNode realNodeIndex realParentNode
         case maybeNode of
           Nothing -> pure unit
           Just node -> do
@@ -355,7 +344,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
               Nothing -> pure unit
               Just mi -> liftEffect do
                 let adjustedIdx = if realNodeIndex < mi then mi + 1 else mi
-                maybeAfterNode <- childNode adjustedIdx realParentNode
+                maybeAfterNode <- Util.childNode adjustedIdx realParentNode
                 void case maybeAfterNode of
                   Nothing -> appendChild node realParentNode
                   Just afterNode -> insertBefore node afterNode realParentNode
@@ -386,7 +375,7 @@ operateCreating
    . VElement state
   -> ReaderT (UIContext state) Effect Node
 operateCreating (Text text) =
-  liftEffect $ createText_ text >>= T.toNode >>> pure
+  liftEffect $ Util.createText_ text
 operateCreating (Element isManual vobject) = do
   el <- createElement_ vobject
   let node = E.toNode el
@@ -431,7 +420,7 @@ operateUpdating
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
 operateUpdating node (Text c) (Text n) =
-  liftEffect $ updateText_ c n node
+  liftEffect $ Util.updateText_ c n node
 operateUpdating node (Element _ c) (Element isManual n) = do
   let el = unsafeCoerce node
   updateElement_ c n el
@@ -462,17 +451,7 @@ toOperation ctx =
 
 
 
--- Rendering utilities
-
-childNode :: Int -> Node -> Effect (Maybe Node)
-childNode i node = childNodes node >>= item i
-
-createText_ :: String -> Effect Text
-createText_ text = doc >>= createTextNode text
-
-updateText_ :: String -> String -> Node -> Effect Unit
-updateText_ current next node =
-  when (current /= next) $ setTextContent next node
+-- Renderers for a VNode
 
 createElement_
   :: forall state
@@ -481,8 +460,8 @@ createElement_
 createElement_ { tagName, props, handlers } = do
   { isSVG } <- ask
   el <- liftEffect if isSVG
-    then doc >>= createElementNS svgNameSpace tagName
-    else doc >>= createElement tagName
+    then Util.createElementNS_ tagName
+    else Util.createElement_ tagName
   let props' :: Array (Tuple String String)
       props' = Object.toUnfoldable props
       handlers' :: Array (Tuple String (Event -> Operation state -> Effect Unit))
@@ -510,7 +489,7 @@ runLifecycle lifecycle = do
   liftEffect $ lifecycle $ toOperation ctx
 
 removeHandler :: String -> Element -> Effect Unit
-removeHandler name = setForeign name (unsafeToForeign null)
+removeHandler name = Util.setForeign name (unsafeToForeign null)
 
 setHandler
   :: forall state
@@ -521,7 +500,7 @@ setHandler
 setHandler name h el = do
   ctx <- ask
   listener <- liftEffect $ eventListener $ flip h $ toOperation ctx
-  liftEffect $ setForeign name (unsafeToForeign listener) el
+  liftEffect $ Util.setForeign name (unsafeToForeign listener) el
 
 updateHandlers
   :: forall state
@@ -546,26 +525,25 @@ removeProp
   -> Element
   -> ReaderT (UIContext state) Effect Unit
 removeProp "css" _ el = do
-  maybeClassName <- liftEffect $ E.getAttribute stylerAttributeName el
+  maybeClassName <- liftEffect $ Util.getStylerAttribute el
   case maybeClassName of
     Nothing -> pure unit
     Just generatedClassName ->
       removeClass generatedClassName el
 removeProp "class" val el = removeProp "className" val el
 removeProp "className" val el =
-  Safe.for_ (classNames val) $ flip removeClass el
+  Safe.for_ (Util.classNames val) $ flip removeClass el
 removeProp "style" _ el = liftEffect $ E.removeAttribute "style" el
 removeProp "list" _ el = liftEffect $ E.removeAttribute "list" el
 removeProp "form" _ el = liftEffect $ E.removeAttribute "form" el
 removeProp "dropzone" _ el = liftEffect $ E.removeAttribute "dropzone" el
 removeProp name _ el = do
   { isSVG } <- ask
-  liftEffect if isSVG && hasXlinkPrefix name
-    then
-      removeAttributeNS xlinkNameSpace (replace xlinkRegex "" name) el
+  liftEffect if isSVG && Util.hasXlinkPrefix name
+    then Util.removeAttributeNS_ name el
     else do
-      when (isProperty name el && not isSVG)
-        $ setForeign name (unsafeToForeign "") el
+      when (Util.isProperty name el && not isSVG)
+        $ Util.setForeign name (unsafeToForeign "") el
       E.removeAttribute name el
 
 setProp
@@ -578,11 +556,11 @@ setProp "css" val el = do
   { styler } <- ask
   generatedClassName <- liftEffect $ registerStyle val styler
   removeProp "css" "dummyVal" el
-  liftEffect $ E.setAttribute stylerAttributeName generatedClassName el
+  liftEffect $ Util.setStylerAttribute generatedClassName el
   addClass generatedClassName el
 setProp "class" val el = setProp "className" val el
 setProp "className" val el =
-  Safe.for_ (classNames val) $ flip addClass el
+  Safe.for_ (Util.classNames val) $ flip addClass el
 setProp "style" val el =
   liftEffect $ E.setAttribute "style" val el
 setProp "list" val el =
@@ -593,17 +571,15 @@ setProp "dropzone" val el =
   liftEffect $ E.setAttribute "dropzone" val el
 setProp name val el = do
   { isSVG } <- ask
-  liftEffect if isProperty name el && not isSVG
+  liftEffect if Util.isProperty name el && not isSVG
     then
-      if isBoolean name el
-        then setForeign name (unsafeToForeign $ not $ val == "false") el
-        else setForeign name (unsafeToForeign val) el
+      if Util.isBoolean name el
+        then Util.setForeign name (unsafeToForeign $ not $ val == "false") el
+        else Util.setForeign name (unsafeToForeign val) el
     else
-      if isSVG && hasXlinkPrefix name
-        then
-          setAttributeNS xlinkNameSpace (replace xlinkRegex "" name) val el
-        else
-          E.setAttribute name val el
+      if isSVG && Util.hasXlinkPrefix name
+        then Util.setAttributeNS_ name val el
+        else E.setAttribute name val el
 
 updateProps
   :: forall state
@@ -624,8 +600,8 @@ updateProps currents nexts el =
           | c == n -> pure unit
           | notElem name [ "class", "className" ] -> setProp name n el
           | otherwise ->
-              let currentClasses = classNames c
-                  nextClasses = classNames n
+              let currentClasses = Util.classNames c
+                  nextClasses = Util.classNames n
                   removeTargets = filter (flip notElem nextClasses) currentClasses
                   addTargets = filter (flip notElem currentClasses) nextClasses
                in do
@@ -651,7 +627,7 @@ addClass val el = do
       flip (E.setAttribute "class") el case maybeClassName of
         Nothing -> val
         Just current ->
-          S.joinWith " " $ snoc (classNames current) val
+          S.joinWith " " $ snoc (Util.classNames current) val
 
 removeClass
   :: forall state
@@ -673,35 +649,4 @@ removeClass val el = do
         Nothing -> pure unit
         Just current ->
           flip (E.setAttribute "class") el
-            $ S.joinWith " " $ filter (_ /= val) $ classNames current
-
-classNames :: String -> Array String
-classNames val = filter (not <<< S.null) $ S.split (S.Pattern " ") val
-
-hasXlinkPrefix :: String -> Boolean
-hasXlinkPrefix = test xlinkRegex
-
-xlinkRegex :: Regex
-xlinkRegex = unsafeRegex "^xlink:" noFlags
-
-doc :: Effect Document
-doc = window >>= document >>= toDocument >>> pure
-
-svgNameSpace :: Maybe String
-svgNameSpace = Just "http://www.w3.org/2000/svg"
-
-xlinkNameSpace :: String
-xlinkNameSpace = "http://www.w3.org/1999/xlink"
-
-stylerAttributeName :: String
-stylerAttributeName = "data-freedom-styler-class"
-
-foreign import setForeign :: String -> Foreign -> Element -> Effect Unit
-
-foreign import setAttributeNS :: String -> String -> String -> Element -> Effect Unit
-
-foreign import removeAttributeNS :: String -> String -> Element -> Effect Unit
-
-foreign import isProperty :: String -> Element -> Boolean
-
-foreign import isBoolean :: String -> Element -> Boolean
+            $ S.joinWith " " $ filter (_ /= val) $ Util.classNames current
