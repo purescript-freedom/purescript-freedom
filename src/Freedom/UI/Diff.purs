@@ -26,15 +26,15 @@ type Patcher parent child m = PatchArgs parent child -> m Unit
 data RealOperation = Add | Delete
 
 type DiffState a =
-    { currents :: Array a
-    , nexts :: Array a
-    , currentStart :: Int
-    , currentEnd :: Int
-    , nextStart :: Int
-    , nextEnd :: Int
-    , realOperations :: Array (Tuple Int RealOperation)
-    , keyToIndex :: O.Object Int
-    }
+  { currents :: Array a
+  , nexts :: Array a
+  , currentStart :: Int
+  , currentEnd :: Int
+  , nextStart :: Int
+  , nextEnd :: Int
+  , realOperations :: Array (Tuple Int RealOperation)
+  , keyToIndex :: O.Object Int
+  }
 
 initState
   :: forall a
