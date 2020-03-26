@@ -2,6 +2,7 @@ module Freedom.UI
   ( Subscription
   , Renderer
   , Operation
+  , VObject
   , VNode
   , keyed
   , renderingManually
@@ -13,6 +14,7 @@ module Freedom.UI
   , didCreate
   , didUpdate
   , didDelete
+  , modifyVObject
   , UI
   , createUI
   , renderUI
@@ -76,6 +78,7 @@ type Operation state =
   , renderer :: Renderer state
   }
 
+-- | The representation of a specified tag element.
 type VObject state =
   { tagName :: String
   , props :: Object String
@@ -135,7 +138,7 @@ kids
    . Array (VNode state)
   -> VNode state
   -> VNode state
-kids children = mapVObject _ { children = children }
+kids children = modifyVObject _ { children = children }
 
 -- | Add a property.
 prop
@@ -144,7 +147,7 @@ prop
   -> String
   -> VNode state
   -> VNode state
-prop name val = mapVObject \vobject ->
+prop name val = modifyVObject \vobject ->
   vobject { props = Object.insert name val vobject.props }
 
 -- | Bind an event handler.
@@ -154,7 +157,7 @@ handle
   -> (Event -> Operation state -> Effect Unit)
   -> VNode state
   -> VNode state
-handle name h = mapVObject \vobject ->
+handle name h = modifyVObject \vobject ->
   vobject { handlers = Object.insert name h vobject.handlers }
 
 -- | Bind `didCreate` lifecycle.
@@ -163,7 +166,7 @@ didCreate
    . (Element -> Operation state -> Effect Unit)
   -> VNode state
   -> VNode state
-didCreate h = mapVObject _ { didCreate = h }
+didCreate h = modifyVObject _ { didCreate = h }
 
 -- | Bind `didUpdate` lifecycle.
 didUpdate
@@ -171,7 +174,7 @@ didUpdate
    . (Element -> Operation state -> Effect Unit)
   -> VNode state
   -> VNode state
-didUpdate h = mapVObject _ { didUpdate = h }
+didUpdate h = modifyVObject _ { didUpdate = h }
 
 -- | Bind `didDelete` lifecycle.
 didDelete
@@ -179,14 +182,15 @@ didDelete
    . (Element -> Operation state -> Effect Unit)
   -> VNode state
   -> VNode state
-didDelete h = mapVObject _ { didDelete = h }
+didDelete h = modifyVObject _ { didDelete = h }
 
-mapVObject
+-- | The low level API for modifying a `VNode` of specified tag element.
+modifyVObject
   :: forall state
    . (VObject state -> VObject state)
   -> VNode state
   -> VNode state
-mapVObject updator (VNode k velement) =
+modifyVObject updator (VNode k velement) =
   VNode k case velement of
     Element isManual vobject ->
       Element isManual $ updator vobject
