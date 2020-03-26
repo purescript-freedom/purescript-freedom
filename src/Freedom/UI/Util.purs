@@ -89,7 +89,7 @@ xlinkRegex :: Regex
 xlinkRegex = unsafeRegex "^xlink:" noFlags
 
 doc :: Effect Document
-doc = window >>= document >>= toDocument >>> pure
+doc = window >>= document <#> toDocument
 
 svgNameSpace :: Maybe String
 svgNameSpace = Just "http://www.w3.org/2000/svg"
