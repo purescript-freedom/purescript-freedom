@@ -28,7 +28,7 @@ import Data.Array (filter, notElem, snoc, take, union, (!!), (:))
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Nullable (null)
 import Data.String as S
-import Data.Traversable (sequence)
+import Data.Traversable (for)
 import Data.Tuple (Tuple(..), fst, uncurry)
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -446,7 +446,7 @@ toOperation ctx =
     getLatestRenderedChildren =
       map fst <$> fromMaybe [] <$> (_ !! 0) <$> readHistoryRef ctx.historyRef
     renderChildren node children = do
-      result <- sequence $ children <#> \c -> Tuple c <$> newHistoryRef
+      result <- for children \c -> Tuple c <$> newHistoryRef
       history <- addToHistoryRef result ctx.historyRef
       flip runReaderT ctx do
         diff patch node
