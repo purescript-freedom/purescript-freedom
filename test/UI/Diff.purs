@@ -21,8 +21,8 @@ testDiff = suite "Diff" do
      Assert.equal "text_0" $ getKey 0 $ H.t "test text"
      Assert.equal "element_false_span_1" $ getKey 1 $ (H.span :: Html)
      Assert.equal "element_true_div_2" $ getKey 2 $ (H.renderingManually $ H.div :: Html)
-     Assert.equal "element_false_span_key1" $ getKey 1 $ (H.keyed "key1" $ H.span :: Html)
-     Assert.equal "element_true_div_key2" $ getKey 2 $ (H.keyed "key2" $ H.renderingManually $ H.div :: Html)
+     Assert.equal "element_false_span_key1" $ getKey 1 $ (H.key "key1" $ H.span :: Html)
+     Assert.equal "element_true_div_key2" $ getKey 2 $ (H.key "key2" $ H.renderingManually $ H.div :: Html)
   suite "diff" do
     Safe.for_ targetLists \targetList ->
       test (show startingList <> " -> " <> show targetList) do

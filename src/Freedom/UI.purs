@@ -4,7 +4,7 @@ module Freedom.UI
   , Operation
   , VObject
   , VNode
-  , keyed
+  , key
   , renderingManually
   , t
   , tag
@@ -107,8 +107,8 @@ instance hasKeyVNode :: HasKey (VNode state) where
       identifier = if k == "" then show idx else k
 
 -- | Add a key to `VNode`.
-keyed :: forall state. String -> VNode state -> VNode state
-keyed k (VNode _ velement) = VNode k velement
+key :: forall state. String -> VNode state -> VNode state
+key k (VNode _ velement) = VNode k velement
 
 -- | If you want to render children manually, you should use this.
 renderingManually :: forall state. VNode state -> VNode state
