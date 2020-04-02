@@ -418,3 +418,7 @@ For your reference, if you do not add keys, `purescript-freedom` generates key f
 `purescript-freedom` indentify `VNode` by keys, lifecycle mechanism is supported by it.
 
 If Lifecycle is not triggered correctly, you should consider using keys.
+
+## Module documentation
+
+Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-freedom).
