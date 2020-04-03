@@ -419,6 +419,92 @@ For your reference, if you do not add keys, `purescript-freedom` generates key f
 
 If Lifecycle is not triggered correctly, you should consider using keys.
 
+## Customize rendering
+
+**This section is advanced usage.**
+
+In `purescript-freedom`, you can customize rendering.
+
+The background of this feature is [here](https://github.com/purescript-freedom/purescript-freedom/blob/master/docs/02-Concepts.md#customizable-rendering), and I recommend you to read it.
+
+Minimum example:
+
+```purescript
+import Prelude
+
+import Effect (Effect)
+import Freedom.Markup as H
+import Freedom.UI (VNode, Operation)
+import Web.DOM.Element (Element, toNode)
+
+view :: forall state. Array (VNode state) -> VNode state
+view children =
+  H.div
+    # H.renderingManually
+    # H.didCreate (didCreate children)
+    # H.didUpdate (didUpdate children)
+    # H.didDelete didDelete
+
+didCreate
+  :: forall state
+   . Array (VNode state)
+  -> Element
+  -> Operation state
+  -> Effect Unit
+didCreate children element { renderer } =
+  renderer.renderChildren (toNode element) children
+
+didUpdate
+  :: forall state
+   . Array (VNode state)
+  -> Element
+  -> Operation state
+  -> Effect Unit
+didUpdate children element { renderer } =
+  renderer.renderChildren (toNode element) children
+
+didDelete
+  :: forall state
+   . Element
+  -> Operation state
+  -> Effect Unit
+didDelete element { renderer } =
+  renderer.renderChildren (toNode element) []
+```
+
+First point is `renderingManually`.
+
+If you call it, `purescript-freedom` doesn't render children. In other words, you should manage to render children manually.
+
+Next point is `renderer`.
+
+The type of `renderer` is below:
+
+```purescript
+type Renderer state =
+  { getLatestRenderedChildren :: Effect (Array (VNode state))
+  , renderChildren :: Node -> Array (VNode state) -> Effect Unit
+  }
+```
+
+Points:
+
+- `getLatestRenderedChildren`
+  - Get children already rendered.
+- `renderChildren`
+  - Patch passed children with previous rendered children.
+  - you can choose parent node of children freely.
+
+Minimum example uses lifecycles only, but you can render children in event handlers, because event handlers are passed `Operation`.
+
+In short, you can customize rendering with `renderer`.
+
+Packages that use this feature are below, let's check them:
+
+- [purescript-freedom-portal](https://github.com/purescript-freedom/purescript-freedom-portal)
+- [purescript-freedom-virtualized](https://github.com/purescript-freedom/purescript-freedom-virtualized)
+- [purescript-freedom-transition](https://github.com/purescript-freedom/purescript-freedom-transition)
+
 ## Module documentation
 
 Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-freedom).
