@@ -14,7 +14,6 @@ Go to [examples](https://github.com/purescript-freedom/purescript-freedom/tree/m
 
 ## Concepts
 - Less boilerplate
-- Testable and customizable effect
 - Customizable rendering
 - CSS with auto-generated class
 
