@@ -26,8 +26,8 @@ newtype Store state = Store
 
 -- | The type of queries to app state.
 -- |
--- | `select`: Get app state
--- | `reduce`: Modify app state
+-- | `select`: Get app state.
+-- | `reduce`: Modify app state.
 type Query state =
   { select :: Effect state
   , reduce :: (state -> state) -> Effect Unit

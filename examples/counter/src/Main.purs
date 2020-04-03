@@ -1,28 +1,3 @@
-# Getting Started
-
-`purescript-freedom` is one of the Virtual DOM.
-
-It has no npm dependency.
-
-## Installation
-
-### Bower
-
-```
-$ bower install --save purescript-freedom
-```
-
-### Spago
-
-```
-$ spago install freedom
-```
-
-## Example
-
-The counter example is below.
-
-```purescript
 module Main where
 
 import Prelude
@@ -95,11 +70,3 @@ increment operation =
 decrement :: Operation State -> Effect Unit
 decrement operation =
   operation.query.reduce (_ - 1)
-```
-
-Points:
-- It has single state as whole state of application.
-- You can write css with auto-generated class.
-- You can update state using `reduce` function and pure function as state updater.
-
-If you are interested in `purescript-freedom`, please take a look at [other samples](https://github.com/purescript-freedom/purescript-freedom/tree/master/examples) or [some packages](https://github.com/purescript-freedom) ;)

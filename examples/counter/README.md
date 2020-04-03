@@ -1,4 +1,4 @@
-# purescript-freedom svg example
+# purescript-freedom counter example
 
 ## Install
 

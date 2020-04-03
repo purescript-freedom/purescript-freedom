@@ -5,59 +5,54 @@ import Prelude
 import Effect (Effect)
 import Freedom as Freedom
 import Freedom.Markup as H
-import Freedom.TransformF.Simple (VQueryF, transformF)
-import Freedom.VNode (VNode)
+import Freedom.UI (VNode)
 
 type State = Unit
-
-type Html = VNode VQueryF State
 
 main :: Effect Unit
 main = Freedom.run
   { selector: "#app"
   , initialState: unit
   , subscriptions: []
-  , transformF
   , view
   }
 
-view :: State -> Html
+view :: State -> VNode State
 view _ =
-  H.el $ H.tag "svg"
-    # H.css cssSVG
+  H.tag "svg"
+    # H.css svgStyles
     # H.prop "viewBox" "0 0 1000 600"
     # H.kids
-        [ H.el $ H.tag "symbol" # H.id "s-text" # H.kids
-            [ H.el $ H.tag "text"
+        [ H.tag "symbol" # H.id "s-text" # H.kids
+            [ H.tag "text"
                 # H.prop "text-anchor" "middle"
                 # H.prop "x" "50%"
                 # H.prop "y" "68%"
                 # H.kids [ H.t "Freedom" ]
             ]
-        , H.el $ H.tag "g" # H.kids
-            [ H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
-            , H.el $ H.tag "use" # H.css cssUse # H.prop "xlink:href" "#s-text"
+        , H.tag "g" # H.kids
+            [ H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
+            , H.tag "use" # H.css useStyles # H.prop "xlink:href" "#s-text"
             ]
         ]
   where
-    cssSVG =
+    svgStyles =
       """
-      html, body { height: 100%; }
       body {
+        margin: 0;
         background: #082330;
         background-size: .12em 100%;
-        font: 16em/1 Arial;
       }
       .& {
-        position: absolute;
+        font: 16em/1 Arial;
         width: 100%;
-        height: 100%;
+        height: 100vh;
       }
       """
-    cssUse =
+    useStyles =
       """
       .& {
         fill: none;

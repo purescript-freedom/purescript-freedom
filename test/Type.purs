@@ -2,7 +2,6 @@ module Test.Type where
 
 import Prelude
 
-import Freedom.TransformF.Simple (VQueryF)
-import Freedom.VNode (VNode)
+import Freedom.UI (VNode)
 
-type Html = VNode VQueryF Unit
+type Html = VNode Unit
