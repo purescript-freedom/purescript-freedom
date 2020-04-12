@@ -14,6 +14,7 @@ module Freedom.UI
   , didCreate
   , didUpdate
   , didDelete
+  , fingerprint
   , modifyVObject
   , UI
   , createUI
@@ -46,7 +47,7 @@ import Unsafe.Coerce (unsafeCoerce)
 import Web.DOM.DOMTokenList as DTL
 import Web.DOM.Element (Element)
 import Web.DOM.Element as E
-import Web.DOM.Node (Node, appendChild, insertBefore, removeChild)
+import Web.DOM.Node (Node, appendChild, insertBefore, removeChild, setTextContent)
 import Web.Event.Event (Event)
 import Web.Event.EventTarget (eventListener)
 import Web.HTML.HTMLElement (classList, fromElement)
@@ -81,6 +82,7 @@ type Operation state =
 -- | The representation of a specified tag element.
 type VObject state =
   { tagName :: String
+  , fingerprint :: String
   , props :: Object String
   , handlers :: Object (Event -> Operation state -> Effect Unit)
   , children :: Array (VNode state)
@@ -124,6 +126,7 @@ t = VNode "" <<< Text
 tag :: forall state. String -> VNode state
 tag tagName = VNode "" $ Element false
   { tagName
+  , fingerprint: ""
   , props: Object.empty
   , handlers: Object.empty
   , children: []
@@ -183,6 +186,12 @@ didDelete
   -> VNode state
   -> VNode state
 didDelete h = modifyVObject _ { didDelete = h }
+
+-- | Fingerprint to check equality of elements.
+-- |
+-- | If it is same as previous rendered element's one, renderer skips rendering.
+fingerprint :: forall state. String -> VNode state -> VNode state
+fingerprint val = modifyVObject _ { fingerprint = val }
 
 -- | The low level API for modifying a `VNode` of specified tag element.
 modifyVObject
@@ -352,7 +361,7 @@ patch { current, next, realParentNode, realNodeIndex, moveIndex } =
                 void case maybeAfterNode of
                   Nothing -> appendChild node realParentNode
                   Just afterNode -> insertBefore node afterNode realParentNode
-            operateUpdating node current' next'
+            when (shouldUpdate current' next') $ operateUpdating node current' next'
 
 switchContext
   :: forall state
@@ -424,7 +433,7 @@ operateUpdating
   -> VElement state
   -> ReaderT (UIContext state) Effect Unit
 operateUpdating node (Text c) (Text n) =
-  liftEffect $ Util.updateText_ c n node
+  liftEffect $ setTextContent n node
 operateUpdating node (Element _ c) (Element isManual n) = do
   let el = unsafeCoerce node
   updateElement_ c n el
@@ -433,6 +442,14 @@ operateUpdating node (Element _ c) (Element isManual n) = do
     liftEffect $ renderer.renderChildren node n.children
   runLifecycle $ n.didUpdate el
 operateUpdating _ _ _ = pure unit
+
+shouldUpdate :: forall state. VElement state -> VElement state -> Boolean
+shouldUpdate (Element _ current) (Element _ next) =
+  case current.fingerprint, next.fingerprint of
+    "", "" -> true
+    cf, nf -> cf /= nf
+shouldUpdate (Text current) (Text next) = current /= next
+shouldUpdate _ _ = true
 
 toOperation :: forall state. UIContext state -> Operation state
 toOperation ctx =
