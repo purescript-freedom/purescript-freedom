@@ -8,6 +8,8 @@ Overview:
 - State
 - Subscription
 - VNode
+- Customize rendering
+- Module documentation
 
 ## How to run UI
 
@@ -418,6 +420,25 @@ For your reference, if you do not add keys, `purescript-freedom` generates key f
 `purescript-freedom` indentify `VNode` by keys, lifecycle mechanism is supported by it.
 
 If Lifecycle is not triggered correctly, you should consider using keys.
+
+#### Fingerprint
+
+For performance, you can use `fingerprint` function to skip rendering a element.
+
+**If fingerprint is same as previous rendered element's one, `purescript-freedom` skips rendering process.**
+
+```purescript
+import Freedom.Markup as H
+import Freedom.UI (VNode)
+
+view :: Int -> VNode Int
+view count =
+  H.div
+    # H.fingerprint (show count)
+    # H.kids [ H.t $ show count ]
+```
+
+But if you want to render huge list, I recommend to use [purescript-freedom-virtualized](https://github.com/purescript-freedom/purescript-freedom-virtualized) that is faster.
 
 ## Customize rendering
 
