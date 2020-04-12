@@ -3,7 +3,6 @@ module Freedom.UI.Util
   , raf
   , childNode
   , createText_
-  , updateText_
   , createElement_
   , createElementNS_
   , setAttributeNS_
@@ -29,7 +28,7 @@ import Effect (Effect)
 import Foreign (Foreign)
 import Web.DOM.Document (Document, createElement, createElementNS, createTextNode)
 import Web.DOM.Element as E
-import Web.DOM.Node (Node, childNodes, setTextContent)
+import Web.DOM.Node (Node, childNodes)
 import Web.DOM.NodeList (item)
 import Web.DOM.ParentNode (QuerySelector(..), querySelector)
 import Web.DOM.Text as T
@@ -52,10 +51,6 @@ childNode i node = childNodes node >>= item i
 
 createText_ :: String -> Effect Node
 createText_ text = doc >>= createTextNode text <#> T.toNode
-
-updateText_ :: String -> String -> Node -> Effect Unit
-updateText_ current next node =
-  when (current /= next) $ setTextContent next node
 
 createElement_ :: String -> Effect E.Element
 createElement_ tagName =
