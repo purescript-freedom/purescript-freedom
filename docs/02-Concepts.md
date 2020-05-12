@@ -73,7 +73,7 @@ Also, even if they puts state in the correct place at that time, keeping state i
 The point is that there aren't many people actually use local state properly.
 
 On the other hand, managing all state in global state needs more codes than local state (e.g. initializing on lifecycle).
-Also its state shape often doesn't become intuitive, because we can't manage state per a component.
+Also its state shape often doesn't become intuitive, because of not managing state per a component.
 Managing all state in global state has these problems, but that don't confuse people about layers to manage state.
 
 In `purescript-freedom`, such UI state is managed in global state only.
