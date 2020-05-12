@@ -64,7 +64,10 @@ Essentially both are fine.
 (Some teams have no policy to manage local state, and as a result code often becomes messy.)
 
 Many developers insist on "their theory of local state", but judging properly between global and local state is difficult for many developers, they often puts state in the wrong place.
-They notice it's the wrong place afterwards, but they often solve forcibly by passing callback some handlers received from very far layer instead of changing place to manage state.
+They notice it's the wrong place afterwards, but they often solve forcibly by passing callbacks some handlers received from very far layer instead of changing place to manage state, then, the callback is often called in a delicate sequence.
+The callback at this time cannot receive free processing, and must receive fixed processing.
+It indicates that the handler relies on the work being passed to the callback.
+I think using callback in such case is a bad design.
 Also, even if they puts state in the correct place at that time, keeping state in the right place while adding new features is difficult for many developers.
 
 The point is that there aren't many people actually use local state properly.
