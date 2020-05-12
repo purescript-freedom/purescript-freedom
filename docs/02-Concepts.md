@@ -67,7 +67,7 @@ Many developers insist on "their theory of local state", but judging properly be
 They notice it's the wrong place afterwards, but they often solve forcibly by passing callback some handlers received from very far layer instead of changing place to manage state.
 Also, even if they puts state in the correct place at that time, keeping state in the right place while adding new features is difficult for many developers.
 
-The point is that there aren't many people actually use the local state properly.
+The point is that there aren't many people actually use local state properly.
 
 On the other hand, managing all state in global state needs more codes than local state (e.g. initializing on lifecycle).
 Also its state shape often doesn't become intuitive, because we can't manage state per a component.
