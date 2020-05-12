@@ -55,19 +55,30 @@ And local state splits into 2 patterns.
 - Has possibility to become global state, and it depends on your app spec
 - Has no possibility to become global state
 
-In my experience, about the former, where it is managed depends on the team's policy.
+### Has possibility to become global state, and it depends on your app spec
+
+In my experience, where it is managed depends on the team's policy.
 In a team, the former is managed in local state, In other team, it is managed in global state.
 Essentially both are fine.
 
-But judging properly between global and local state is difficult for some developers.
-In the process of adding many codes, keeping state in the right place is also difficult in a team that is has various developers.
+(Some teams have no policy to manage local state, and as a result code often becomes messy.)
 
-Also some teams have no policy to manage local state, and as a result code often becomes messy.
+Many developers insist on "their theory of local state", but judging properly between global and local state is difficult for many developers, they often puts state in the wrong place.
+They notice it's the wrong place afterwards, but they often solve forcibly by passing callback some handlers received from very far layer instead of changing place to manage state.
+Also, even if they puts state in the correct place at that time, keeping state in the right place while adding new features is difficult for many developers.
+
+The point is that there aren't many people actually use the local state properly.
+
+On the other hand, managing all state in global state needs more codes than local state (e.g. initializing on lifecycle).
+Also its state shape often doesn't become intuitive, because we can't manage state per a component.
+Managing all state in global state has these problems, but that don't confuse people about layers to manage state.
 
 In `purescript-freedom`, such UI state is managed in global state only.
-Because `purescript-freedom` doesn't want to get people lost when writing codes.
+Because `purescript-freedom` doesn't want to confuse people when writing codes.
 
-The latter examples are virtual list, CSS transition (with view lifecycle).
+### Has no possibility to become global state
+
+Examples are virtual list, CSS transition (with view lifecycle).
 In many common virtual DOMs, views that affect the rendering process like these are implemented using local state.
 And its local state is completely unrelated to the domain logic.
 In such case, we will think "I want to hide implementation details in its view".
@@ -89,7 +100,7 @@ Sometimes, we want to ignore DOM hierarchy when render node.
 For example, the portal—like the portal of React.js—that is used often for modal and dropdown and so on.
 You can implement it with this mechanism.
 
-In summary, it is very useful in `purescript-freedom` that it can't manage user defined local state.
+In summary, it is very useful in `purescript-freedom` that can't manage user defined local state.
 
 `purescript-freedom` has already some packages used in its mechanism.
 
