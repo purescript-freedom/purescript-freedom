@@ -98,6 +98,39 @@ data VElement state
 -- | The type of virtual node.
 data VNode state = VNode String (VElement state)
 
+instance eqVNode :: Eq (VNode state) where
+  eq (VNode str el) (VNode str2 el2) = str == str2 && el == el2
+
+instance eqVElement :: Eq (VElement state) where
+  eq (Text str1) (Text str2) = str1 == str2
+  eq (Text _) _ = false
+  eq _ (Text _) = false
+  eq (Element b1 vobj1) (Element b2 vobj2) = b1 == b2 && (equalVObject vobj1 vobj2)
+
+equalVObject :: forall state. VObject state -> VObject state -> Boolean
+equalVObject vObj1 vObj2 = 
+    vObj1.tagName == vObj2.tagName 
+    && vObj1.fingerprint == vObj2.fingerprint
+    && vObj1.props == vObj2.props
+    && vObj1.children == vObj2.children
+
+instance showVNode :: Show (VNode state) where
+  show (VNode str el) = "Vnode: " <> str <> " " <> show el
+
+instance showVElement :: Show (VElement state) where
+  show (Text str) = "Text: " <> str
+  show (Element b vObj) = "Element (isManual: " 
+      <> show b 
+      <> "; " 
+      <> showVObject vObj <> ")" 
+
+showVObject :: forall s. VObject s -> String
+showVObject obj = "VObject (tagName: " <> obj.tagName
+    <> "; fingerprint: " <> obj.fingerprint
+    <> "; props: " <> show obj.props
+    <> "; children: " <> show obj.children <> ")"
+
+
 instance hasKeyVNode :: HasKey (VNode state) where
   getKey idx (VNode k velement) =
     case velement of
