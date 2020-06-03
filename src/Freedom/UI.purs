@@ -114,20 +114,14 @@ equalVObject vObj1 vObj2 =
     && vObj1.children == vObj2.children
 
 instance showVNode :: Show (VNode state) where
-  show (VNode str el) = "Vnode: " <> str <> " " <> show el
+  show (VNode k el) = "(VNode " <> show k <> " " <> show el <> ")"
 
 instance showVElement :: Show (VElement state) where
-  show (Text str) = "Text: " <> str
-  show (Element b vObj) = "Element (isManual: " 
-      <> show b 
-      <> "; " 
-      <> showVObject vObj <> ")" 
+  show (Text str) = "(Text: " <> str <> ")"
+  show (Element isManual vObj) = "(Element " <> show isManual <> " " <> showVObject vObj <> ")"
 
 showVObject :: forall s. VObject s -> String
-showVObject obj = "VObject (tagName: " <> obj.tagName
-    <> "; fingerprint: " <> obj.fingerprint
-    <> "; props: " <> show obj.props
-    <> "; children: " <> show obj.children <> ")"
+showVObject obj = "{ tagName: " <> show obj.tagName <> ", fingerprint: " <> show obj.fingerprint <> ", props: " <> show obj.props <> ", children: " <> show obj.children <> "}"
 
 
 instance hasKeyVNode :: HasKey (VNode state) where
