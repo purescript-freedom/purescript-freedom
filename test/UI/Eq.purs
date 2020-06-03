@@ -13,6 +13,10 @@ testVNodeEq = suite "Equalitiy of elements" do
   test "single element equal" do
      Assert.assert "should equal" (H.div == H.div)
      Assert.assert "should not equal" (H.h1 /= H.div)
+  test "text equal" do
+     Assert.assert "should not equal tag" (H.t "T" /= H.div)
+     Assert.assert "should not equal different text" (H.t "T" /= H.t "D")
+     Assert.assert "should equal same text" (H.t "T" == H.t "T")
   test "rendering manually" do
     Assert.assert "should not equal" (renderingManually H.div /= H.div)
   test "fingerprint" do

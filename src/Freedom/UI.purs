@@ -103,9 +103,8 @@ instance eqVNode :: Eq (VNode state) where
 
 instance eqVElement :: Eq (VElement state) where
   eq (Text str1) (Text str2) = str1 == str2
-  eq (Text _) _ = false
-  eq _ (Text _) = false
   eq (Element b1 vobj1) (Element b2 vobj2) = b1 == b2 && (equalVObject vobj1 vobj2)
+  eq _ _ = false
 
 equalVObject :: forall state. VObject state -> VObject state -> Boolean
 equalVObject vObj1 vObj2 = 
