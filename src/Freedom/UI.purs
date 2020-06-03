@@ -117,7 +117,7 @@ instance showVNode :: Show (VNode state) where
   show (VNode k el) = "(VNode " <> show k <> " " <> show el <> ")"
 
 instance showVElement :: Show (VElement state) where
-  show (Text str) = "(Text: " <> str <> ")"
+  show (Text str) = "(Text " <> str <> ")"
   show (Element isManual vObj) = "(Element " <> show isManual <> " " <> showVObject vObj <> ")"
 
 showVObject :: forall s. VObject s -> String
