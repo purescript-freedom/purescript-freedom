@@ -9,7 +9,6 @@ import Test.UI.Show (testVNodeShow)
 import Test.UI.Example (testView)
 import Test.Unit.Main (runTest)
 
-
 main :: Effect Unit
 main = runTest do
   testDiff
