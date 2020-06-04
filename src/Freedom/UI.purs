@@ -107,8 +107,8 @@ instance eqVElement :: Eq (VElement state) where
   eq _ _ = false
 
 equalVObject :: forall state. VObject state -> VObject state -> Boolean
-equalVObject vObj1 vObj2 = 
-    vObj1.tagName == vObj2.tagName 
+equalVObject vObj1 vObj2 =
+    vObj1.tagName == vObj2.tagName
     && vObj1.fingerprint == vObj2.fingerprint
     && vObj1.props == vObj2.props
     && vObj1.children == vObj2.children
@@ -117,12 +117,11 @@ instance showVNode :: Show (VNode state) where
   show (VNode k el) = "(VNode " <> show k <> " " <> show el <> ")"
 
 instance showVElement :: Show (VElement state) where
-  show (Text str) = "(Text " <> str <> ")"
+  show (Text str) = "(Text " <> show str <> ")"
   show (Element isManual vObj) = "(Element " <> show isManual <> " " <> showVObject vObj <> ")"
 
 showVObject :: forall s. VObject s -> String
 showVObject obj = "{ tagName: " <> show obj.tagName <> ", fingerprint: " <> show obj.fingerprint <> ", props: " <> show obj.props <> ", children: " <> show obj.children <> "}"
-
 
 instance hasKeyVNode :: HasKey (VNode state) where
   getKey idx (VNode k velement) =
