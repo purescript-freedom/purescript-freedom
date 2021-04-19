@@ -6,7 +6,7 @@
 
 [![Latest release](http://img.shields.io/github/release/purescript-freedom/purescript-freedom.svg)](https://github.com/purescript-freedom/purescript-freedom/releases)
 
-> I have new UI package and recommend you [purescript-grain](https://github.com/purescript-grain/purescript-grain) instead of this.
+:warning: I have new UI package and recommend you [purescript-grain](https://github.com/purescript-grain/purescript-grain) instead of this. :warning:
 
 A practical type-safe UI library for PureScript. No npm dependencies required.
 
